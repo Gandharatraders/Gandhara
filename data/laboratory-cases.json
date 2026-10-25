@@ -1,0 +1,308 @@
+[
+  {
+    "type": "watch",
+    "watchDetails": {
+      "brand": "d",
+      "model": "d",
+      "referenceNumber": "3",
+      "serialNumber": "3",
+      "purchaseDate": "2026-10-19",
+      "purchaseLocation": "3",
+      "country": "Pakistan",
+      "city": "dd",
+      "hasProofOfPurchase": true,
+      "observations": "dfdffd"
+    },
+    "uploads": [
+      {
+        "id": "upload-0",
+        "type": "dial",
+        "fileName": "crownix_luxury_watches_landscape_slideshow.mp4",
+        "filePath": "/uploads/laboratory/1792262614956-crownix_luxury_watches_landscape_slideshow.mp4",
+        "uploadedAt": "2026-10-17T18:43:34.956Z"
+      }
+    ],
+    "paymentScreenshot": {
+      "fileName": "im3.png",
+      "filePath": "/uploads/laboratory/payment-1792262614958-im3.png",
+      "uploadedAt": "2026-10-17T18:43:34.958Z"
+    },
+    "id": "1792262615676",
+    "caseNumber": "CXC-MVCQVWXO-6ZBC",
+    "status": "awaiting-info",
+    "createdAt": "2026-10-17T18:43:35.676Z",
+    "updatedAt": "2026-10-18T04:15:42.035Z"
+  },
+  {
+    "type": "gemstone",
+    "watchDetails": {
+      "brand": "dfk",
+      "model": "d",
+      "referenceNumber": "22",
+      "serialNumber": "22",
+      "purchaseDate": "2026-10-21",
+      "purchaseLocation": "j",
+      "country": "Pakistan",
+      "city": "j",
+      "hasProofOfPurchase": false,
+      "observations": ""
+    },
+    "uploads": [
+      {
+        "id": "upload-0",
+        "type": "dial",
+        "fileName": "crownix_luxury_watches_landscape_slideshow.mp4",
+        "filePath": "/uploads/laboratory/1792264772272-crownix_luxury_watches_landscape_slideshow.mp4",
+        "uploadedAt": "2026-10-17T19:19:32.272Z"
+      }
+    ],
+    "paymentScreenshot": {
+      "fileName": "im3.png",
+      "filePath": "/uploads/laboratory/payment-1792264772273-im3.png",
+      "uploadedAt": "2026-10-17T19:19:32.273Z"
+    },
+    "id": "1792264772484",
+    "caseNumber": "CXC-MVCS6550-VXCI",
+    "status": "completed",
+    "createdAt": "2026-10-17T19:19:32.484Z",
+    "updatedAt": "2026-10-17T19:27:59.597Z"
+  },
+  {
+    "type": "watch",
+    "watchDetails": {
+      "brand": "Rolex",
+      "model": "123w",
+      "referenceNumber": "222",
+      "serialNumber": "4444",
+      "purchaseDate": "2026-10-01",
+      "purchaseLocation": "Saddar",
+      "country": "Pakistan",
+      "city": "Peshawar",
+      "hasProofOfPurchase": false,
+      "observations": ""
+    },
+    "uploads": [
+      {
+        "id": "upload-0",
+        "type": "dial",
+        "fileName": "crownix_luxury_watches_landscape_slideshow.mp4",
+        "filePath": "/uploads/laboratory/1792298689566-crownix_luxury_watches_landscape_slideshow.mp4",
+        "uploadedAt": "2026-10-18T04:44:49.617Z"
+      },
+      {
+        "id": "upload-1",
+        "type": "side-profile",
+        "fileName": "im3.png",
+        "filePath": "/uploads/laboratory/1792298689593-im3.png",
+        "uploadedAt": "2026-10-18T04:44:49.625Z"
+      }
+    ],
+    "paymentScreenshot": {
+      "fileName": "logo.png",
+      "filePath": "/uploads/laboratory/1792298689540-logo.png",
+      "uploadedAt": "2026-10-18T04:44:49.608Z"
+    },
+    "id": "1792298689726",
+    "caseNumber": "CXC-MVDCD3UM-K8AA",
+    "status": "completed",
+    "createdAt": "2026-10-18T04:44:49.726Z",
+    "updatedAt": "2026-10-18T04:46:20.534Z",
+    "assessment": {
+      "isAuthentic": true,
+      "findings": "100%Original One piece in pakistan",
+      "expertNotes": "Find out as authentic Rolex Watch"
+    }
+  },
+  {
+    "type": "gemstone",
+    "watchDetails": {
+      "brand": "d",
+      "model": "s",
+      "referenceNumber": "3",
+      "serialNumber": "3",
+      "purchaseDate": "2026-10-30",
+      "purchaseLocation": "l",
+      "country": "Pakistan",
+      "city": "k",
+      "hasProofOfPurchase": true,
+      "observations": "hggjghj"
+    },
+    "uploads": [
+      {
+        "id": "upload-0",
+        "type": "dial",
+        "fileName": "im3 (1).png",
+        "filePath": "/uploads/laboratory/1792321414457-im3 (1).png",
+        "uploadedAt": "2026-10-18T11:03:34.508Z"
+      },
+      {
+        "id": "upload-1",
+        "type": "side-profile",
+        "fileName": "crownix_luxury_watches_landscape_slideshow (2).mp4",
+        "filePath": "/uploads/laboratory/1792321414476-crownix_luxury_watches_landscape_slideshow (2).mp4",
+        "uploadedAt": "2026-10-18T11:03:34.505Z"
+      }
+    ],
+    "paymentScreenshot": {
+      "fileName": "pc wallpaper.png",
+      "filePath": "/uploads/laboratory/1792321414426-pc wallpaper.png",
+      "uploadedAt": "2026-10-18T11:03:34.501Z"
+    },
+    "proofOfPurchase": {
+      "fileName": "im3 (1).png",
+      "filePath": "/uploads/laboratory/1792321414559-im3 (1).png",
+      "uploadedAt": "2026-10-18T11:03:34.598Z"
+    },
+    "id": "1792321414701",
+    "caseNumber": "CXC-MVDPW6JY-T4SH",
+    "status": "completed",
+    "createdAt": "2026-10-18T11:03:34.702Z",
+    "updatedAt": "2026-10-18T11:04:10.499Z",
+    "assessment": {
+      "isAuthentic": true,
+      "findings": "dfsdfsfsd",
+      "expertNotes": "reerree"
+    }
+  },
+  {
+    "type": "watch",
+    "watchDetails": {
+      "brand": "Rolex",
+      "model": "915A",
+      "referenceNumber": "121213",
+      "serialNumber": "8989X",
+      "purchaseDate": "2026-10-01",
+      "purchaseLocation": "Saddar",
+      "country": "Pakistan",
+      "city": "Peshawar ",
+      "hasProofOfPurchase": false,
+      "observations": ""
+    },
+    "uploads": [
+      {
+        "id": "upload-0",
+        "type": "dial",
+        "fileName": "crownix_luxury_watches_landscape_slideshow (2).mp4",
+        "filePath": "/uploads/laboratory/1792406631657-crownix_luxury_watches_landscape_slideshow (2).mp4",
+        "uploadedAt": "2026-10-19T10:43:51.698Z"
+      },
+      {
+        "id": "upload-1",
+        "type": "side-profile",
+        "fileName": "im3.png",
+        "filePath": "/uploads/laboratory/1792406631631-im3.png",
+        "uploadedAt": "2026-10-19T10:43:51.716Z"
+      }
+    ],
+    "paymentScreenshot": {
+      "fileName": "final_logo-removebg-preview.png",
+      "filePath": "/uploads/laboratory/1792406631522-final_logo-removebg-preview.png",
+      "uploadedAt": "2026-10-19T10:43:51.668Z"
+    },
+    "proofOfPurchase": null,
+    "id": "1792406631910",
+    "caseNumber": "CXC-MVF4MOKN-OXFI",
+    "status": "completed",
+    "createdAt": "2026-10-19T10:43:51.911Z",
+    "updatedAt": "2026-10-19T10:45:14.267Z",
+    "assessment": {
+      "isAuthentic": false,
+      "findings": "This watch is replaced\nNot original watch",
+      "expertNotes": "It is considered as local watch not branded"
+    }
+  },
+  {
+    "type": "watch",
+    "watchDetails": {
+      "brand": "Rolex",
+      "model": "jsaksj9",
+      "referenceNumber": "12323",
+      "serialNumber": "12323",
+      "purchaseDate": "2026-10-01",
+      "purchaseLocation": "Saddar",
+      "country": "Pakistan",
+      "city": "Peshawar",
+      "hasProofOfPurchase": false,
+      "observations": ""
+    },
+    "uploads": [
+      {
+        "id": "upload-0",
+        "type": "dial",
+        "fileName": "crownix_luxury_watches_landscape_slideshow (2).mp4",
+        "filePath": "/uploads/laboratory/1792411378292-crownix_luxury_watches_landscape_slideshow (2).mp4",
+        "uploadedAt": "2026-10-19T12:02:58.528Z"
+      },
+      {
+        "id": "upload-1",
+        "type": "side-profile",
+        "fileName": "im3.png",
+        "filePath": "/uploads/laboratory/1792411378558-im3.png",
+        "uploadedAt": "2026-10-19T12:02:58.579Z"
+      }
+    ],
+    "paymentScreenshot": {
+      "fileName": "final_logo-removebg-preview.png",
+      "filePath": "/uploads/laboratory/1792411378387-final_logo-removebg-preview.png",
+      "uploadedAt": "2026-10-19T12:02:58.505Z"
+    },
+    "proofOfPurchase": null,
+    "id": "1792411378653",
+    "caseNumber": "CXC-MVF7GF6L-R0CQ",
+    "status": "completed",
+    "createdAt": "2026-10-19T12:02:58.653Z",
+    "updatedAt": "2026-10-19T12:04:55.026Z",
+    "assessment": {
+      "isAuthentic": true,
+      "findings": "100% original watch",
+      "expertNotes": "All parts Originasl"
+    }
+  },
+  {
+    "type": "watch",
+    "watchDetails": {
+      "brand": "Rado",
+      "model": "292898",
+      "referenceNumber": "",
+      "serialNumber": "",
+      "purchaseDate": "2026-10-15",
+      "purchaseLocation": "Saddar",
+      "country": "Pakistan",
+      "city": "Peshawar",
+      "hasProofOfPurchase": false,
+      "observations": ""
+    },
+    "uploads": [
+      {
+        "id": "upload-0",
+        "type": "dial",
+        "fileName": "crownix_luxury_watches_landscape_slideshow.mp4",
+        "filePath": "/uploads/laboratory/1792569079056-crownix_luxury_watches_landscape_slideshow.mp4",
+        "uploadedAt": "2026-10-21T07:51:19.103Z"
+      },
+      {
+        "id": "upload-1",
+        "type": "side-profile",
+        "fileName": "im1.png",
+        "filePath": "/uploads/laboratory/1792569079150-im1.png",
+        "uploadedAt": "2026-10-21T07:51:19.185Z"
+      }
+    ],
+    "paymentScreenshot": {
+      "fileName": "banner.jpg",
+      "filePath": "/uploads/laboratory/1792569079013-banner.jpg",
+      "uploadedAt": "2026-10-21T07:51:19.088Z"
+    },
+    "proofOfPurchase": null,
+    "id": "1792569079529",
+    "caseNumber": "CXC-MVHTCHYH-7BKH",
+    "status": "completed",
+    "createdAt": "2026-10-21T07:51:19.530Z",
+    "updatedAt": "2026-10-21T07:53:25.118Z",
+    "assessment": {
+      "isAuthentic": true,
+      "findings": "100%  original dgksdklssldjlfsdjlls",
+      "expertNotes": "100% water pack"
+    }
+  }
+]

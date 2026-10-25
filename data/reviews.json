@@ -1,0 +1,17 @@
+[
+  {
+    "productId": "1792513752498",
+    "customerName": "Salman khan",
+    "rating": 5,
+    "comment": "recieved what i expected ",
+    "photos": [
+      "/uploads/reviews/1792571221249-im1.png",
+      "/uploads/reviews/1792571221324-im2.png",
+      "/uploads/reviews/1792571221388-im3.png"
+    ],
+    "orderNumber": "ORD-503977",
+    "id": "1792571221424",
+    "approved": true,
+    "createdAt": "2026-10-21T08:27:01.424Z"
+  }
+]
