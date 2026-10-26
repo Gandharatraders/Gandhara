@@ -43,11 +43,17 @@ next-env.d.ts
 # uploads (uploaded images and videos)
 /public/uploads/
 
-# Large video files (exclude for faster upload)
+# Large media files (exclude for faster upload)
 *.mp4
 *.mov
 *.avi
 *.mkv
+public/images/*.jpg
+public/images/*.jpeg
+public/images/*.png
+public/*.jpg
+public/*.jpeg
+public/*.png
 
 # data (JSON database files - or commit if you want to keep them)
 # /data/
