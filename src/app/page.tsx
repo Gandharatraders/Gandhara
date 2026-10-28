@@ -5,6 +5,7 @@ import Footer from '@/components/layout/Footer';
 import LuxuryProductCard from '@/components/product/LuxuryProductCard';
 import ProductReviews from '@/components/product/ProductReviews';
 import { getFeaturedProductsServer } from '@/lib/data-server';
+import { getApprovedReviews } from '@/lib/supabase-db';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Suspense } from 'react';
@@ -30,10 +31,7 @@ async function FeaturedProducts() {
 }
 
 async function CustomerReviews() {
-  const response = await fetch('/api/reviews', {
-    cache: 'no-store',
-  });
-  const reviews = await response.json();
+  const reviews = await getApprovedReviews();
 
   if (!reviews || reviews.length === 0) {
     return (
@@ -43,12 +41,12 @@ async function CustomerReviews() {
     );
   }
 
-  // Filter only approved reviews with 4+ rating, max 5
-  const approvedReviews = reviews
-    .filter((r: any) => r.approved && r.rating >= 4)
+  // Filter only reviews with 4+ rating, max 5
+  const topReviews = reviews
+    .filter((r: any) => r.rating >= 4)
     .slice(0, 5);
 
-  if (approvedReviews.length === 0) {
+  if (topReviews.length === 0) {
     return (
       <div className="text-center py-12">
         <p className="text-[#A6A6A6]">No approved reviews yet. Reviews will appear here after admin approval.</p>
@@ -58,7 +56,7 @@ async function CustomerReviews() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {approvedReviews.map((review: any) => (
+      {topReviews.map((review: any) => (
         <div key={review.id} className="bg-[#101010] rounded-xl p-6 border border-[#292929]">
           <div className="flex items-center gap-2 mb-4">
             <div className="flex">
@@ -82,9 +80,9 @@ async function CustomerReviews() {
 
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[#F5F5F5] font-medium">{review.customerName}</p>
+              <p className="text-[#F5F5F5] font-medium">{review.customer_name}</p>
               <p className="text-xs text-[#555555]">
-                {new Date(review.createdAt).toLocaleDateString()}
+                {new Date(review.created_at).toLocaleDateString()}
               </p>
             </div>
             {review.photos && review.photos.length > 0 && (
