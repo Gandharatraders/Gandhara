@@ -30,7 +30,7 @@ async function FeaturedProducts() {
 }
 
 async function CustomerReviews() {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/reviews`, {
+  const response = await fetch('/api/reviews', {
     cache: 'no-store',
   });
   const reviews = await response.json();
