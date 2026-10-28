@@ -1,6 +1,13 @@
 -- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
+-- Drop existing tables if they exist (in reverse order of dependencies)
+DROP TABLE IF EXISTS laboratory_cases CASCADE;
+DROP TABLE IF EXISTS messages CASCADE;
+DROP TABLE IF EXISTS reviews CASCADE;
+DROP TABLE IF EXISTS orders CASCADE;
+DROP TABLE IF EXISTS products CASCADE;
+
 -- Products table
 CREATE TABLE products (
   id TEXT PRIMARY KEY,
