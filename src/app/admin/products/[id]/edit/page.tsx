@@ -6,8 +6,9 @@ import AdminLayout from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ArrowLeft, Upload, X } from 'lucide-react';
+import { Suspense } from 'react';
 
-export default function EditProductPage() {
+function EditProductContent() {
   const router = useRouter();
   const params = useParams();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -50,11 +51,12 @@ export default function EditProductPage() {
       // Load product data from API
       fetchProduct();
     }
-  }, [router, params.id]);
+  }, [router, params]);
 
   const fetchProduct = async () => {
     try {
-      const response = await fetch(`/api/products/${params.id}`);
+      const { id } = await params;
+      const response = await fetch(`/api/products/${id}`);
       const data = await response.json();
       if (data) {
         setProduct(data);
@@ -198,7 +200,8 @@ export default function EditProductPage() {
         updatedAt: new Date().toISOString()
       };
 
-      const response = await fetch(`/api/products/${params.id}`, {
+      const { id } = await params;
+      const response = await fetch(`/api/products/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(productData)
@@ -683,5 +686,13 @@ export default function EditProductPage() {
         </form>
       </div>
     </AdminLayout>
+  );
+}
+
+export default function EditProductPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-[#050505] text-[#A6A6A6]">Loading...</div>}>
+      <EditProductContent />
+    </Suspense>
   );
 }
