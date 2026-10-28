@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
@@ -16,7 +16,7 @@ const statusConfig = {
   cancelled: { label: 'Cancelled', color: 'bg-red-500/10 text-red-500', icon: XCircle },
 };
 
-export default function OrderDetailPage() {
+function OrderDetailContent() {
   const router = useRouter();
   const params = useParams();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -36,7 +36,7 @@ export default function OrderDetailPage() {
 
   const fetchOrder = async () => {
     try {
-      const id = params.id;
+      const { id } = await params;
       console.log('Fetching order with ID:', id);
       
       const response = await fetch(`/api/orders/${id}`);
@@ -58,7 +58,7 @@ export default function OrderDetailPage() {
     } catch (error) {
       console.error('Failed to fetch order:', error);
       // Try localStorage fallback
-      const id = params.id;
+      const { id } = await params;
       const orders = JSON.parse(localStorage.getItem('crownix-orders') || '[]');
       const foundOrder = orders.find((o: any) => o.id === id);
       if (foundOrder) {
@@ -118,7 +118,7 @@ export default function OrderDetailPage() {
             Back to Orders
           </Button>
           <p className="text-[#A6A6A6] mb-2">Order not found</p>
-          <p className="text-sm text-[#A6A6A6]">Order ID: {params.id}</p>
+          <p className="text-sm text-[#A6A6A6]">Order ID: loading...</p>
         </div>
       </AdminLayout>
     );
@@ -292,5 +292,13 @@ export default function OrderDetailPage() {
         </div>
       </div>
     </AdminLayout>
+  );
+}
+
+export default function OrderDetailPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-[#050505] text-[#A6A6A6]">Loading...</div>}>
+      <OrderDetailContent />
+    </Suspense>
   );
 }
