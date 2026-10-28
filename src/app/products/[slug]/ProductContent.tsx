@@ -169,7 +169,7 @@ export default function ProductContent() {
                   <div>
                     <h3 className="text-sm font-semibold text-[#F5F5F5] mb-3">Color</h3>
                     <div className="flex gap-2">
-                      {product.colors.map((color) => (
+                      {product.colors.map((color: string) => (
                         <button
                           key={color}
                           onClick={() => setSelectedColor(color)}
@@ -191,7 +191,7 @@ export default function ProductContent() {
                   <div>
                     <h3 className="text-sm font-semibold text-[#F5F5F5] mb-3">Strap Type</h3>
                     <div className="flex gap-2">
-                      {product.strapTypes.map((strap) => (
+                      {product.strapTypes.map((strap: string) => (
                         <button
                           key={strap}
                           onClick={() => setSelectedStrap(strap)}
@@ -299,7 +299,7 @@ export default function ProductContent() {
                         <dt className="text-sm text-[#A6A6A6] capitalize">
                           {key.replace(/([A-Z])/g, ' $1').trim()}
                         </dt>
-                        <dd className="text-sm text-[#F5F5F5]">{value}</dd>
+                        <dd className="text-sm text-[#F5F5F5]">{String(value)}</dd>
                       </div>
                     ))}
                   </dl>

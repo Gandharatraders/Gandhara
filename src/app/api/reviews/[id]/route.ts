@@ -17,12 +17,13 @@ async function saveReviews(reviews: any[]) {
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const resolvedParams = await params;
     const body = await request.json();
     const reviews = await getReviews();
-    const index = reviews.findIndex((r: any) => r.id === params.id);
+    const index = reviews.findIndex((r: any) => r.id === resolvedParams.id);
 
     if (index === -1) {
       return NextResponse.json({ error: 'Review not found' }, { status: 404 });
@@ -44,11 +45,12 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const resolvedParams = await params;
     const reviews = await getReviews();
-    const index = reviews.findIndex((r: any) => r.id === params.id);
+    const index = reviews.findIndex((r: any) => r.id === resolvedParams.id);
 
     if (index === -1) {
       return NextResponse.json({ error: 'Review not found' }, { status: 404 });

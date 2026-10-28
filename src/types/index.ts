@@ -16,6 +16,7 @@ export interface Product {
   colors: string[];
   strapTypes?: string[];
   colorImages?: { [key: string]: string[] }; // Color-specific images
+  brand?: string;
   specifications?: ProductSpecifications;
   shippingInfo?: string;
   returnInfo?: string;

@@ -22,7 +22,7 @@ export async function GET(
   try {
     const { id } = await params;
     const products = await getProducts();
-    const product = products.find(p => p.id === id);
+    const product = products.find((p: any) => p.id === id);
 
     if (!product) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 });
@@ -43,7 +43,7 @@ export async function PUT(
     const { id } = await params;
     const body = await request.json();
     const products = await getProducts();
-    const index = products.findIndex(p => p.id === id);
+    const index = products.findIndex((p: any) => p.id === id);
 
     if (index === -1) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 });
@@ -72,7 +72,7 @@ export async function DELETE(
   try {
     const { id } = await params;
     const products = await getProducts();
-    const index = products.findIndex(p => p.id === id);
+    const index = products.findIndex((p: any) => p.id === id);
 
     if (index === -1) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 });

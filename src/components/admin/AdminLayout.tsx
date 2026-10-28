@@ -52,7 +52,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               src="/logo.png"
               alt="Gandhara Traders Company"
               className="w-full h-full object-contain"
-              className="object-contain"
             />
           </div>
           <div className="w-10" />
@@ -81,7 +80,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 src="/logo.png"
                 alt="Gandhara Traders Company"
                 className="w-full h-full object-contain"
-                className="object-contain"
               />
             </div>
             <p className="text-xs text-[#A6A6A6] text-center mt-2">Admin Dashboard</p>
