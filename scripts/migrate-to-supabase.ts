@@ -1,6 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
 import { promises as fs } from 'fs';
 import path from 'path';
+import dotenv from 'dotenv';
+
+// Load environment variables from .env.local
+dotenv.config({ path: '.env.local' });
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -40,7 +44,7 @@ async function migrateProducts() {
     updated_at: p.updatedAt || new Date().toISOString(),
   }));
 
-  const { error } = await supabase.from('products').insert(productsSnake);
+  const { error } = await supabase.from('products').upsert(productsSnake, { onConflict: 'id' });
   if (error) {
     console.error('Error migrating products:', error);
   } else {
@@ -59,7 +63,7 @@ async function migrateOrders() {
     updated_at: o.updatedAt || new Date().toISOString(),
   }));
 
-  const { error } = await supabase.from('orders').insert(ordersSnake);
+  const { error } = await supabase.from('orders').upsert(ordersSnake, { onConflict: 'id' });
   if (error) {
     console.error('Error migrating orders:', error);
   } else {
@@ -78,7 +82,7 @@ async function migrateReviews() {
     updated_at: r.updatedAt || new Date().toISOString(),
   }));
 
-  const { error } = await supabase.from('reviews').insert(reviewsSnake);
+  const { error } = await supabase.from('reviews').upsert(reviewsSnake, { onConflict: 'id' });
   if (error) {
     console.error('Error migrating reviews:', error);
   } else {
@@ -97,7 +101,7 @@ async function migrateMessages() {
     updated_at: m.updatedAt || new Date().toISOString(),
   }));
 
-  const { error } = await supabase.from('messages').insert(messagesSnake);
+  const { error } = await supabase.from('messages').upsert(messagesSnake, { onConflict: 'id' });
   if (error) {
     console.error('Error migrating messages:', error);
   } else {
@@ -110,14 +114,19 @@ async function migrateLaboratoryCases() {
   console.log('Migrating laboratory cases...');
   const cases = await readJsonFile('laboratory-cases.json');
   const casesSnake = cases.map((c: any) => ({
-    ...toSnakeCase(c),
     id: c.id,
     case_number: c.caseNumber,
+    type: c.type,
+    watch_details: c.watchDetails,
+    uploads: c.uploads,
+    payment_screenshot: c.paymentScreenshot,
+    status: c.status,
+    assessment: c.assessment || {},
     created_at: c.createdAt || new Date().toISOString(),
     updated_at: c.updatedAt || new Date().toISOString(),
   }));
 
-  const { error } = await supabase.from('laboratory_cases').insert(casesSnake);
+  const { error } = await supabase.from('laboratory_cases').upsert(casesSnake, { onConflict: 'id' });
   if (error) {
     console.error('Error migrating laboratory cases:', error);
   } else {
