@@ -1,19 +1,5 @@
 import { NextResponse } from 'next/server';
-import { promises as fs } from 'fs';
-import path from 'path';
-
-const DATA_FILE = path.join(process.cwd(), 'data', 'products.json');
-
-// Helper function to read products
-async function getProducts() {
-  const data = await fs.readFile(DATA_FILE, 'utf-8');
-  return JSON.parse(data);
-}
-
-// Helper function to write products
-async function saveProducts(products: any[]) {
-  await fs.writeFile(DATA_FILE, JSON.stringify(products, null, 2));
-}
+import { getProductById, updateProduct, deleteProduct } from '@/lib/supabase-db';
 
 export async function GET(
   request: Request,
@@ -21,8 +7,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const products = await getProducts();
-    const product = products.find((p: any) => p.id === id);
+    const product = await getProductById(id);
 
     if (!product) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 });
@@ -42,23 +27,19 @@ export async function PUT(
   try {
     const { id } = await params;
     const body = await request.json();
-    const products = await getProducts();
-    const index = products.findIndex((p: any) => p.id === id);
 
-    if (index === -1) {
+    const updatedProduct = {
+      ...body,
+      updated_at: new Date().toISOString()
+    };
+
+    const product = await updateProduct(id, updatedProduct);
+
+    if (!product) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 });
     }
 
-    products[index] = {
-      ...products[index],
-      ...body,
-      id: id,
-      updatedAt: new Date().toISOString()
-    };
-
-    await saveProducts(products);
-
-    return NextResponse.json(products[index]);
+    return NextResponse.json(product);
   } catch (error) {
     console.error('PUT product error:', error);
     return NextResponse.json({ error: 'Failed to update product' }, { status: 500 });
@@ -71,15 +52,7 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const products = await getProducts();
-    const index = products.findIndex((p: any) => p.id === id);
-
-    if (index === -1) {
-      return NextResponse.json({ error: 'Product not found' }, { status: 404 });
-    }
-
-    products.splice(index, 1);
-    await saveProducts(products);
+    await deleteProduct(id);
 
     return NextResponse.json({ message: 'Product deleted successfully' });
   } catch (error) {

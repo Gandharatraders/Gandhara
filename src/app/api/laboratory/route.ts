@@ -1,26 +1,13 @@
 import { NextResponse } from 'next/server';
-import { promises as fs } from 'fs';
-import path from 'path';
+import { getLaboratoryCases, createLaboratoryCase } from '@/lib/supabase-db';
 import { generateCaseNumber } from '@/lib/utils';
-
-const DATA_FILE = path.join(process.cwd(), 'data', 'laboratory-cases.json');
-
-// Helper function to read cases
-async function getCases() {
-  const data = await fs.readFile(DATA_FILE, 'utf-8');
-  return JSON.parse(data);
-}
-
-// Helper function to write cases
-async function saveCases(cases: any[]) {
-  await fs.writeFile(DATA_FILE, JSON.stringify(cases, null, 2));
-}
 
 export async function GET() {
   try {
-    const cases = await getCases();
+    const cases = await getLaboratoryCases();
     return NextResponse.json(cases);
   } catch (error) {
+    console.error('GET laboratory cases error:', error);
     return NextResponse.json({ error: 'Failed to fetch cases' }, { status: 500 });
   }
 }
@@ -28,23 +15,22 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const cases = await getCases();
 
     const newCase = {
       ...body,
       id: Date.now().toString(),
-      caseNumber: generateCaseNumber(),
+      case_number: generateCaseNumber(),
       type: body.type || 'watch',
       status: 'submitted',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
     };
 
-    cases.push(newCase);
-    await saveCases(cases);
+    const labCase = await createLaboratoryCase(newCase);
 
-    return NextResponse.json(newCase, { status: 201 });
+    return NextResponse.json(labCase, { status: 201 });
   } catch (error) {
+    console.error('POST laboratory case error:', error);
     return NextResponse.json({ error: 'Failed to create case' }, { status: 500 });
   }
 }
