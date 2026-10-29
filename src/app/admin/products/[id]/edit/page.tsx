@@ -288,7 +288,7 @@ function EditProductContent() {
   return (
     <AdminLayout>
       <div className="p-6 lg:p-8">
-        {/* Header */}
+        {/* Header/}
         <div className="flex items-center gap-4 mb-8">
           <Button
             variant="outline"
@@ -308,20 +308,19 @@ function EditProductContent() {
           </div>
         </div>
 
-        {/* Form */}
+        {/* Form/}
         <form onSubmit={handleSubmit} className="max-w-3xl">
           <div className="bg-[#101010] rounded-xl p-6 border border-[#292929] space-y-6">
-            {/* Basic Information */}
+            {/* Basic Information/}
             <div className="space-y-4">
               <h2 className="text-lg font-semibold text-[#F5F5F5]">Basic Information</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm text-[#A6A6A6] mb-2">
-                    Product Name *
+                    Product Name
                   </label>
                   <Input
-                    required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     placeholder="Enter product name"
@@ -352,10 +351,10 @@ function EditProductContent() {
 
                 <div>
                   <label className="block text-sm text-[#A6A6A6] mb-2">
-                    Category *
+                    Category
                   </label>
                   <select
-                    required
+
                     value={formData.category}
                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                     className="w-full px-4 py-2.5 bg-[#151515] border border-[#292929] rounded-lg text-[#F5F5F5] focus:outline-none focus:ring-2 focus:ring-[#E50920] focus:border-transparent"
@@ -369,10 +368,10 @@ function EditProductContent() {
 
                 <div>
                   <label className="block text-sm text-[#A6A6A6] mb-2">
-                    Brand *
+                    Brand
                   </label>
                   <select
-                    required
+
                     value={formData.brand}
                     onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
                     className="w-full px-4 py-2.5 bg-[#151515] border border-[#292929] rounded-lg text-[#F5F5F5] focus:outline-none focus:ring-2 focus:ring-[#E50920] focus:border-transparent"
@@ -390,10 +389,10 @@ function EditProductContent() {
 
                 <div>
                   <label className="block text-sm text-[#A6A6A6] mb-2">
-                    Availability *
+                    Availability
                   </label>
                   <select
-                    required
+
                     value={formData.availability}
                     onChange={(e) => setFormData({ ...formData, availability: e.target.value })}
                     className="w-full px-4 py-2.5 bg-[#151515] border border-[#292929] rounded-lg text-[#F5F5F5] focus:outline-none focus:ring-2 focus:ring-[#E50920] focus:border-transparent"
@@ -420,7 +419,7 @@ function EditProductContent() {
 
               <div>
                 <label className="block text-sm text-[#A6A6A6] mb-2">
-                  Short Description *
+                  Short Description
                 </label>
                 <Input
                   required
@@ -432,7 +431,7 @@ function EditProductContent() {
 
               <div>
                 <label className="block text-sm text-[#A6A6A6] mb-2">
-                  Full Description *
+                  Full Description
                 </label>
                 <textarea
                   required
@@ -445,17 +444,17 @@ function EditProductContent() {
               </div>
             </div>
 
-            {/* Pricing */}
+            {/* Pricing/}
             <div className="space-y-4 pt-4 border-t border-[#292929]">
               <h2 className="text-lg font-semibold text-[#F5F5F5]">Pricing</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm text-[#A6A6A6] mb-2">
-                    Price (PKR) *
+                    Price (PKR)
                   </label>
                   <Input
-                    required
+
                     type="number"
                     min="0"
                     value={formData.price}
@@ -479,10 +478,10 @@ function EditProductContent() {
 
                 <div>
                   <label className="block text-sm text-[#A6A6A6] mb-2">
-                    Stock Quantity *
+                    Stock Quantity
                   </label>
                   <Input
-                    required
+
                     type="number"
                     min="0"
                     value={formData.stockQuantity}
@@ -493,7 +492,7 @@ function EditProductContent() {
               </div>
             </div>
 
-            {/* Media Upload */}
+            {/* Media Upload/}
             <div className="space-y-4 pt-4 border-t border-[#292929]">
               <h2 className="text-lg font-semibold text-[#F5F5F5]">Media Upload</h2>
               
@@ -593,7 +592,7 @@ function EditProductContent() {
               </div>
             </div>
 
-            {/* Additional Fields */}
+            {/* Additional Fields/}
             <div className="space-y-4 pt-4 border-t border-[#292929]">
               <h2 className="text-lg font-semibold text-[#F5F5F5]">Additional Details</h2>
               
@@ -668,7 +667,7 @@ function EditProductContent() {
               </div>
             </div>
 
-            {/* Actions */}
+            {/* Actions/}
             <div className="flex gap-4 pt-4">
               <Button
                 type="button"
