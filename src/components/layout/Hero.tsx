@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { getSettings } from '@/lib/settings';
 import ProductSlideshow from './ProductSlideshow';
+import { getFeaturedProducts } from '@/lib/supabase-db';
 
 export default function Hero() {
   const [settings, setSettings] = useState(() => {
@@ -32,12 +33,10 @@ export default function Hero() {
       localStorage.removeItem('site-settings');
       setSettings(getSettings());
       
-      // Fetch featured products for slideshow
-      fetch('/api/products')
-        .then(res => res.json())
+      // Fetch featured products for slideshow using Supabase
+      getFeaturedProducts(5)
         .then(data => {
-          const featured = data.filter((p: any) => p.featured).slice(0, 5);
-          setFeaturedProducts(featured);
+          setFeaturedProducts(data || []);
         })
         .catch(err => console.error('Failed to fetch products:', err));
     }
