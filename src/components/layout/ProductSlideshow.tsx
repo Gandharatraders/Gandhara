@@ -42,7 +42,7 @@ export default function ProductSlideshow({ products }: ProductSlideshowProps) {
   }
 
   const currentProduct = products[currentIndex];
-  const productImage = currentProduct.images.main || currentProduct.images.gallery1 || '/placeholder.jpg';
+  const productImage = currentProduct.images?.main || currentProduct.images?.gallery1 || '/placeholder.jpg';
 
   return (
     <div className="relative aspect-video rounded-2xl overflow-hidden border-2 border-[#292929] bg-[#101010]">
