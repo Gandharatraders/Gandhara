@@ -10,9 +10,13 @@ const BUCKET_NAME = 'product-uploads';
 
 export async function POST(request: Request) {
   try {
+    console.log('Upload request received');
+    
     const formData = await request.formData();
     const file = formData.get('file') as File;
     const type = formData.get('type') as string || 'laboratory';
+
+    console.log('File details:', { name: file?.name, size: file?.size, type: file?.type, uploadType: type });
 
     if (!file) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
@@ -21,10 +25,14 @@ export async function POST(request: Request) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
+    console.log('File buffer created, size:', buffer.length);
+
     // Generate unique filename
     const timestamp = Date.now();
     const filename = `${timestamp}-${file.name}`;
     const filepath = `${type}/${filename}`;
+
+    console.log('Uploading to Supabase:', { bucket: BUCKET_NAME, path: filepath });
 
     // Upload to Supabase Storage
     const { data, error } = await supabase.storage
@@ -39,9 +47,12 @@ export async function POST(request: Request) {
       console.error('Error details:', JSON.stringify(error, null, 2));
       return NextResponse.json({ 
         error: 'Failed to upload file to storage',
-        details: error.message 
+        details: error.message,
+        fullError: error
       }, { status: 500 });
     }
+
+    console.log('Upload successful:', data);
 
     // Get public URL
     const { data: { publicUrl } } = supabase.storage
@@ -56,6 +67,10 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     console.error('Upload error:', error);
-    return NextResponse.json({ error: 'Failed to upload file' }, { status: 500 });
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack');
+    return NextResponse.json({ 
+      error: 'Failed to upload file',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
   }
 }
