@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { getSettings } from '@/lib/settings';
+import ProductSlideshow from './ProductSlideshow';
 
 export default function Hero() {
   const [settings, setSettings] = useState(() => {
@@ -13,10 +14,10 @@ export default function Hero() {
     }
     return getSettings();
   });
-  const [videoLoaded, setVideoLoaded] = useState(false);
   const [currentText, setCurrentText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const [textIndex, setTextIndex] = useState(0);
+  const [featuredProducts, setFeaturedProducts] = useState<any[]>([]);
 
   const seoTexts = [
     'Luxury',
@@ -30,6 +31,15 @@ export default function Hero() {
       // Clear old localStorage settings to prevent hydration mismatch
       localStorage.removeItem('site-settings');
       setSettings(getSettings());
+      
+      // Fetch featured products for slideshow
+      fetch('/api/products')
+        .then(res => res.json())
+        .then(data => {
+          const featured = data.filter((p: any) => p.featured).slice(0, 5);
+          setFeaturedProducts(featured);
+        })
+        .catch(err => console.error('Failed to fetch products:', err));
     }
   }, []);
 
@@ -121,42 +131,19 @@ export default function Hero() {
             </div>
           </motion.div>
 
-          {/* Right Side - Video Box */}
+          {/* Right Side - Product Slideshow */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             className="relative"
           >
-            <div className="relative aspect-video rounded-2xl overflow-hidden border-2 border-[#292929] bg-[#101010]">
-              <video
-                autoPlay
-                muted
-                loop
-                playsInline
-                className="w-full h-full object-cover"
-                poster={settings.heroPosterUrl}
-                onCanPlay={() => setVideoLoaded(true)}
-                onError={() => setVideoLoaded(false)}
-              >
-                <source src={settings.heroVideoUrl} type="video/mp4" />
-              </video>
+            <ProductSlideshow products={featuredProducts} />
 
-              {/* Fallback when video doesn't load */}
-              {!videoLoaded && (
-                <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#0a0a0a] via-[#151515] to-[#050505]">
-                  <div className="text-center">
-                    <p className="text-[#A6A6A6] text-sm">Video placeholder</p>
-                    <p className="text-[#666] text-xs mt-2">Add your video in admin settings</p>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Video Caption */}
+            {/* Slideshow Caption */}
             <div className="mt-4 text-center">
               <p className="text-sm text-[#A6A6A6]">
-                Experience the art of precision watchmaking
+                Featured Collection
               </p>
             </div>
           </motion.div>
