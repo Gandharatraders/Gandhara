@@ -113,50 +113,31 @@ export default function NewProductPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate uploads
-    if (images.length < 2) {
-      alert('Minimum 2 images required.');
-      return;
-    }
-
-    if (images.length > 5) {
-      alert('Maximum 5 images allowed.');
-      return;
-    }
-
-    if (!video) {
-      alert('One video is required.');
-      return;
-    }
-
     setIsSubmitting(true);
 
     try {
-      // Check if images are uploaded
-      if (imageUrls.length === 0) {
-        alert('Please upload at least 2 images before submitting.');
-        setIsSubmitting(false);
-        return;
+      // Upload video if provided
+      let videoUrl = null;
+      if (video) {
+        const videoFormData = new FormData();
+        videoFormData.append('file', video);
+        videoFormData.append('type', 'videos');
+
+        const videoResponse = await fetch('/api/upload', {
+          method: 'POST',
+          body: videoFormData
+        });
+
+        if (!videoResponse.ok) {
+          const errorData = await videoResponse.json();
+          alert(`Failed to upload video: ${errorData.error || 'Unknown error'}`);
+          setIsSubmitting(false);
+          return;
+        }
+
+        const videoData = await videoResponse.json();
+        videoUrl = videoData.url;
       }
-
-      // Upload video
-      const videoFormData = new FormData();
-      videoFormData.append('file', video);
-      videoFormData.append('type', 'videos');
-
-      const videoResponse = await fetch('/api/upload', {
-        method: 'POST',
-        body: videoFormData
-      });
-
-      if (!videoResponse.ok) {
-        const errorData = await videoResponse.json();
-        alert(`Failed to upload video: ${errorData.error || 'Unknown error'}`);
-        setIsSubmitting(false);
-        return;
-      }
-
-      const videoData = await videoResponse.json();
 
       // Use already uploaded image URLs
       const finalImageUrls = imageUrls;
@@ -184,25 +165,23 @@ export default function NewProductPage() {
         ...formData,
         sku: autoSku,
         slug: autoSlug,
-        price: parseFloat(formData.price),
+        price: formData.price ? parseFloat(formData.price) : 0,
         salePrice: formData.salePrice ? parseFloat(formData.salePrice) : null,
-        stockQuantity: parseInt(formData.stockQuantity),
-        colors: formData.colors.split(',').map(c => c.trim()),
+        stockQuantity: formData.stockQuantity ? parseInt(formData.stockQuantity) : 0,
+        colors: formData.colors ? formData.colors.split(',').map(c => c.trim()) : [],
         strapTypes: formData.strapTypes ? formData.strapTypes.split(',').map(c => c.trim()) : [],
         specifications: parsedSpecifications,
         featured: formData.featured,
         brand: formData.brand,
-        images: {
+        images: finalImageUrls.length > 0 ? {
           main: finalImageUrls[0],
           gallery1: finalImageUrls[1] || finalImageUrls[0],
           gallery2: finalImageUrls[2] || finalImageUrls[0],
           gallery3: finalImageUrls[3] || finalImageUrls[0],
           gallery4: finalImageUrls[4] || finalImageUrls[0],
           gallery5: finalImageUrls[5] || finalImageUrls[0]
-        },
-        video: videoData.url,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        } : null,
+        video: videoUrl
       };
 
       const response = await fetch('/api/products', {
@@ -263,7 +242,7 @@ export default function NewProductPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm text-[#A6A6A6] mb-2">
-                    Product Name *
+                    Product Name
                   </label>
                   <Input
                     required
@@ -297,7 +276,7 @@ export default function NewProductPage() {
 
                 <div>
                   <label className="block text-sm text-[#A6A6A6] mb-2">
-                    Category *
+                    Category
                   </label>
                   <select
                     required
@@ -314,7 +293,7 @@ export default function NewProductPage() {
 
                 <div>
                   <label className="block text-sm text-[#A6A6A6] mb-2">
-                    Brand *
+                    Brand
                   </label>
                   <select
                     required
@@ -335,7 +314,7 @@ export default function NewProductPage() {
 
                 <div>
                   <label className="block text-sm text-[#A6A6A6] mb-2">
-                    Availability *
+                    Availability
                   </label>
                   <select
                     required
@@ -365,10 +344,9 @@ export default function NewProductPage() {
 
               <div>
                 <label className="block text-sm text-[#A6A6A6] mb-2">
-                  Short Description *
+                  Short Description
                 </label>
                 <Input
-                  required
                   value={formData.shortDescription}
                   onChange={(e) => setFormData({ ...formData, shortDescription: e.target.value })}
                   placeholder="Brief product description"
@@ -377,10 +355,9 @@ export default function NewProductPage() {
 
               <div>
                 <label className="block text-sm text-[#A6A6A6] mb-2">
-                  Full Description *
+                  Full Description
                 </label>
                 <textarea
-                  required
                   rows={4}
                   value={formData.fullDescription}
                   onChange={(e) => setFormData({ ...formData, fullDescription: e.target.value })}
@@ -397,10 +374,9 @@ export default function NewProductPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm text-[#A6A6A6] mb-2">
-                    Price (PKR) *
+                    Price (PKR)
                   </label>
                   <Input
-                    required
                     type="number"
                     min="0"
                     value={formData.price}
@@ -424,10 +400,9 @@ export default function NewProductPage() {
 
                 <div>
                   <label className="block text-sm text-[#A6A6A6] mb-2">
-                    Stock Quantity *
+                    Stock Quantity
                   </label>
                   <Input
-                    required
                     type="number"
                     min="0"
                     value={formData.stockQuantity}
