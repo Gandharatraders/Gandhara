@@ -41,7 +41,8 @@ yarn-error.log*
 next-env.d.ts
 
 # uploads (uploaded images and videos)
-/public/uploads/
+# /public/uploads/ (temporarily disabled for deployment)
+# Uncomment this after setting up Supabase Storage or external CDN
 
 # Large media files (exclude for faster upload)
 *.mp4

@@ -5,9 +5,10 @@ import dotenv from 'dotenv';
 
 dotenv.config({ path: '.env.local' });
 
+// Use service role key for storage operations (bypasses RLS)
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
 const BUCKET_NAME = 'product-images';
@@ -40,21 +41,8 @@ async function uploadFile(filePath: string, fileName: string) {
 
 async function uploadAllImages() {
   console.log('Starting image upload to Supabase Storage...');
-
-  // Check if bucket exists, if not create it
-  const { data: buckets } = await supabase.storage.listBuckets();
-  const bucketExists = buckets?.some((b: any) => b.name === BUCKET_NAME);
-
-  if (!bucketExists) {
-    console.log(`Creating bucket: ${BUCKET_NAME}`);
-    const { error } = await supabase.storage.createBucket(BUCKET_NAME, {
-      public: true
-    });
-    if (error) {
-      console.error('Error creating bucket:', error);
-      return;
-    }
-  }
+  console.log(`Target bucket: ${BUCKET_NAME}`);
+  console.log('Note: Make sure the bucket exists and is public in Supabase Dashboard.\n');
 
   // Get all products
   const { data: products } = await supabase.from('products').select('id, images');
