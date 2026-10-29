@@ -14,7 +14,10 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    console.log('POST product request received');
+    
     const body = await request.json();
+    console.log('Product data:', body);
     
     const newProduct = {
       ...body,
@@ -23,6 +26,8 @@ export async function POST(request: Request) {
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     };
+    
+    console.log('Inserting product:', newProduct);
     
     // Use admin client to bypass RLS
     const { data, error } = await supabaseAdmin
@@ -33,12 +38,19 @@ export async function POST(request: Request) {
 
     if (error) {
       console.error('Supabase error:', error);
+      console.error('Error details:', JSON.stringify(error, null, 2));
       throw error;
     }
+    
+    console.log('Product created successfully:', data);
     
     return NextResponse.json(data, { status: 201 });
   } catch (error) {
     console.error('POST product error:', error);
-    return NextResponse.json({ error: 'Failed to create product' }, { status: 500 });
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack');
+    return NextResponse.json({ 
+      error: 'Failed to create product',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
   }
 }
