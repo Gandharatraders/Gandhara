@@ -22,10 +22,15 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    console.log('POST product request received');
+    console.log('=== POST product request ===');
+    console.log('Environment check:', {
+      hasUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
+      hasServiceKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+      hasAnonKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    });
     
     const body = await request.json();
-    console.log('Product data:', body);
+    console.log('Product data received:', JSON.stringify(body, null, 2));
     
     const newProduct = {
       ...body,
@@ -35,7 +40,7 @@ export async function POST(request: Request) {
       updated_at: new Date().toISOString()
     };
     
-    console.log('Inserting product:', newProduct);
+    console.log('Product to insert:', JSON.stringify(newProduct, null, 2));
     
     // Use admin client to bypass RLS
     const { data, error } = await supabaseAdmin
@@ -45,7 +50,7 @@ export async function POST(request: Request) {
       .single();
 
     if (error) {
-      console.error('Supabase error:', error);
+      console.error('Supabase insert error:', error);
       console.error('Error details:', JSON.stringify(error, null, 2));
       throw error;
     }
