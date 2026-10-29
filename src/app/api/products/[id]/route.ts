@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getProductById, updateProduct, deleteProduct } from '@/lib/supabase-db';
+import { supabaseAdmin } from '@/lib/supabase';
 
 export async function GET(
   request: Request,
@@ -7,13 +7,23 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const product = await getProductById(id);
+    
+    const { data, error } = await supabaseAdmin
+      .from('products')
+      .select('*')
+      .eq('id', id)
+      .single();
 
-    if (!product) {
+    if (error) {
+      console.error('Supabase error:', error);
+      throw error;
+    }
+
+    if (!data) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 });
     }
 
-    return NextResponse.json(product);
+    return NextResponse.json(data);
   } catch (error) {
     console.error('GET product error:', error);
     return NextResponse.json({ error: 'Failed to fetch product' }, { status: 500 });
@@ -33,13 +43,23 @@ export async function PUT(
       updated_at: new Date().toISOString()
     };
 
-    const product = await updateProduct(id, updatedProduct);
+    const { data, error } = await supabaseAdmin
+      .from('products')
+      .update(updatedProduct)
+      .eq('id', id)
+      .select()
+      .single();
 
-    if (!product) {
+    if (error) {
+      console.error('Supabase error:', error);
+      throw error;
+    }
+
+    if (!data) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 });
     }
 
-    return NextResponse.json(product);
+    return NextResponse.json(data);
   } catch (error) {
     console.error('PUT product error:', error);
     return NextResponse.json({ error: 'Failed to update product' }, { status: 500 });
@@ -52,7 +72,16 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    await deleteProduct(id);
+    
+    const { error } = await supabaseAdmin
+      .from('products')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Supabase error:', error);
+      throw error;
+    }
 
     return NextResponse.json({ message: 'Product deleted successfully' });
   } catch (error) {
