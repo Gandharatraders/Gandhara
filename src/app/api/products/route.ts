@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getProducts, createProduct } from '@/lib/supabase-db';
+import { supabaseAdmin } from '@/lib/supabase';
 
 export async function GET() {
   try {
@@ -23,9 +24,19 @@ export async function POST(request: Request) {
       updated_at: new Date().toISOString()
     };
     
-    const product = await createProduct(newProduct);
+    // Use admin client to bypass RLS
+    const { data, error } = await supabaseAdmin
+      .from('products')
+      .insert(newProduct)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Supabase error:', error);
+      throw error;
+    }
     
-    return NextResponse.json(product, { status: 201 });
+    return NextResponse.json(data, { status: 201 });
   } catch (error) {
     console.error('POST product error:', error);
     return NextResponse.json({ error: 'Failed to create product' }, { status: 500 });
