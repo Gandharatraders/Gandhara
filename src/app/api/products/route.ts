@@ -1,11 +1,19 @@
 import { NextResponse } from 'next/server';
-import { getProducts, createProduct } from '@/lib/supabase-db';
 import { supabaseAdmin } from '@/lib/supabase';
 
 export async function GET() {
   try {
-    const products = await getProducts();
-    return NextResponse.json(products);
+    const { data, error } = await supabaseAdmin
+      .from('products')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Supabase error:', error);
+      throw error;
+    }
+
+    return NextResponse.json(data);
   } catch (error) {
     console.error('GET products error:', error);
     return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
