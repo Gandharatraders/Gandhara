@@ -36,7 +36,11 @@ export async function POST(request: Request) {
 
     if (error) {
       console.error('Supabase upload error:', error);
-      return NextResponse.json({ error: 'Failed to upload file to storage' }, { status: 500 });
+      console.error('Error details:', JSON.stringify(error, null, 2));
+      return NextResponse.json({ 
+        error: 'Failed to upload file to storage',
+        details: error.message 
+      }, { status: 500 });
     }
 
     // Get public URL
