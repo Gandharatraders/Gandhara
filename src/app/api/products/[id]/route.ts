@@ -41,7 +41,14 @@ export async function PUT(
     const { id } = await params;
     console.log('Product ID:', id);
     
-    const body = await request.json();
+    let body;
+    try {
+      body = await request.json();
+    } catch (error) {
+      console.error('Failed to parse JSON body:', error);
+      return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
+    }
+    
     console.log('Update data received:', JSON.stringify(body, null, 2));
 
     // Convert data types properly
