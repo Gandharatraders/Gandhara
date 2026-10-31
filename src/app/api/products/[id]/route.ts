@@ -34,6 +34,8 @@ export async function PUT(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  console.log('=== PUT START ===');
+  
   try {
     console.log('=== PUT product request ===');
     const { id } = await params;
