@@ -288,7 +288,7 @@ function EditProductContent() {
   return (
     <AdminLayout>
       <div className="p-6 lg:p-8">
-        {/* Header/}
+        {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <Button
             variant="outline"
@@ -308,10 +308,10 @@ function EditProductContent() {
           </div>
         </div>
 
-        {/* Form/}
+        {/* Form */}
         <form onSubmit={handleSubmit} className="max-w-3xl">
           <div className="bg-[#101010] rounded-xl p-6 border border-[#292929] space-y-6">
-            {/* Basic Information/}
+            {/* Basic Information */}
             <div className="space-y-4">
               <h2 className="text-lg font-semibold text-[#F5F5F5]">Basic Information</h2>
               
@@ -444,7 +444,7 @@ function EditProductContent() {
               </div>
             </div>
 
-            {/* Pricing/}
+            {/* Pricing */}
             <div className="space-y-4 pt-4 border-t border-[#292929]">
               <h2 className="text-lg font-semibold text-[#F5F5F5]">Pricing</h2>
               
@@ -492,7 +492,7 @@ function EditProductContent() {
               </div>
             </div>
 
-            {/* Media Upload/}
+            {/* Media Upload */}
             <div className="space-y-4 pt-4 border-t border-[#292929]">
               <h2 className="text-lg font-semibold text-[#F5F5F5]">Media Upload</h2>
               
@@ -592,7 +592,7 @@ function EditProductContent() {
               </div>
             </div>
 
-            {/* Additional Fields/}
+            {/* Additional Fields */}
             <div className="space-y-4 pt-4 border-t border-[#292929]">
               <h2 className="text-lg font-semibold text-[#F5F5F5]">Additional Details</h2>
               
@@ -667,7 +667,7 @@ function EditProductContent() {
               </div>
             </div>
 
-            {/* Actions/}
+            {/* Actions */}
             <div className="flex gap-4 pt-4">
               <Button
                 type="button"
