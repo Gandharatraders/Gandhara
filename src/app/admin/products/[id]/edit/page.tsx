@@ -183,7 +183,7 @@ function EditProductContent() {
         price: parseFloat(formData.price),
         salePrice: formData.salePrice ? parseFloat(formData.salePrice) : null,
         stockQuantity: parseInt(formData.stockQuantity),
-        colors: formData.colors.split(',').map(c => c.trim()),
+        colors: formData.colors ? formData.colors.split(',').map(c => c.trim()) : [],
         strapTypes: formData.strapTypes ? formData.strapTypes.split(',').map(c => c.trim()) : [],
         specifications: parsedSpecifications,
         featured: formData.featured,
