@@ -63,12 +63,12 @@ export async function PUT(
     if (body.fullDescription !== undefined) updatedProduct.fullDescription = body.fullDescription;
     if (body.colors !== undefined) {
       updatedProduct.colors = typeof body.colors === 'string' 
-        ? body.colors.split(',').map(c => c.trim())
+        ? body.colors.split(',').map((c: string) => c.trim())
         : body.colors;
     }
     if (body.strapTypes !== undefined) {
       updatedProduct.strapTypes = typeof body.strapTypes === 'string'
-        ? body.strapTypes.split(',').map(c => c.trim())
+        ? body.strapTypes.split(',').map((c: string) => c.trim())
         : body.strapTypes;
     }
     if (body.specifications !== undefined) {
