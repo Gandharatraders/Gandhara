@@ -184,10 +184,13 @@ export default function NewProductPage() {
         video: videoUrl
       };
 
+      // Remove fields that don't exist in database
+      const { shippingInfo, returnInfo, careInfo, ...productDataToSend } = productData;
+
       const response = await fetch('/api/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(productData)
+        body: JSON.stringify(productDataToSend)
       });
 
       if (response.ok) {
@@ -462,6 +465,8 @@ export default function NewProductPage() {
                   value={formData.shippingInfo}
                   onChange={(e) => setFormData({ ...formData, shippingInfo: e.target.value })}
                   placeholder="Shipping information"
+                  disabled
+                  className="opacity-50"
                 />
               </div>
 
@@ -473,6 +478,8 @@ export default function NewProductPage() {
                   value={formData.returnInfo}
                   onChange={(e) => setFormData({ ...formData, returnInfo: e.target.value })}
                   placeholder="Return policy"
+                  disabled
+                  className="opacity-50"
                 />
               </div>
 
@@ -484,6 +491,8 @@ export default function NewProductPage() {
                   value={formData.careInfo}
                   onChange={(e) => setFormData({ ...formData, careInfo: e.target.value })}
                   placeholder="Care instructions"
+                  disabled
+                  className="opacity-50"
                 />
               </div>
             </div>

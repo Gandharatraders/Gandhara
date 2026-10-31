@@ -79,9 +79,9 @@ function EditProductContent() {
           colors: Array.isArray(data.colors) ? data.colors.join(', ') : (data.colors || ''),
           strapTypes: Array.isArray(data.strapTypes) ? data.strapTypes.join(', ') : (data.strapTypes || ''),
           specifications: JSON.stringify(data.specifications || {}),
-          shippingInfo: data.shippingInfo || '',
-          returnInfo: data.returnInfo || '',
-          careInfo: data.careInfo || ''
+          shippingInfo: '',
+          returnInfo: '',
+          careInfo: ''
         });
         
         // Set existing image URLs
@@ -200,11 +200,14 @@ function EditProductContent() {
         updatedAt: new Date().toISOString()
       };
 
+      // Remove fields that don't exist in database
+      const { shippingInfo, returnInfo, careInfo, ...productDataToSend } = productData;
+
       const { id } = await params;
       const response = await fetch(`/api/products/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(productData)
+        body: JSON.stringify(productDataToSend)
       });
 
       if (response.ok) {
@@ -641,6 +644,8 @@ function EditProductContent() {
                   value={formData.shippingInfo}
                   onChange={(e) => setFormData({ ...formData, shippingInfo: e.target.value })}
                   placeholder="Shipping information"
+                  disabled
+                  className="opacity-50"
                 />
               </div>
 
@@ -652,6 +657,8 @@ function EditProductContent() {
                   value={formData.returnInfo}
                   onChange={(e) => setFormData({ ...formData, returnInfo: e.target.value })}
                   placeholder="Return policy"
+                  disabled
+                  className="opacity-50"
                 />
               </div>
 
@@ -663,6 +670,8 @@ function EditProductContent() {
                   value={formData.careInfo}
                   onChange={(e) => setFormData({ ...formData, careInfo: e.target.value })}
                   placeholder="Care instructions"
+                  disabled
+                  className="opacity-50"
                 />
               </div>
             </div>

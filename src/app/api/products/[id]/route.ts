@@ -90,9 +90,7 @@ export async function PUT(
         updatedProduct.specifications = {};
       }
     }
-    if (body.shippingInfo !== undefined) updatedProduct.shippingInfo = body.shippingInfo;
-    if (body.returnInfo !== undefined) updatedProduct.returnInfo = body.returnInfo;
-    if (body.careInfo !== undefined) updatedProduct.careInfo = body.careInfo;
+    // Exclude shippingInfo, returnInfo, careInfo as they don't exist in database
     if (body.images !== undefined) updatedProduct.images = body.images;
     if (body.video !== undefined) updatedProduct.video = body.video;
 
