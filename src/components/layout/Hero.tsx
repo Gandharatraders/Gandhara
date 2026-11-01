@@ -36,9 +36,26 @@ export default function Hero() {
       // Fetch hero slideshow products using Supabase
       getHeroSlideshowProducts(5)
         .then(data => {
-          setHeroSlideshowProducts(data || []);
+          // If no hero slideshow products, fall back to featured products
+          if (!data || data.length === 0) {
+            getFeaturedProducts(5)
+              .then(featuredData => {
+                setHeroSlideshowProducts(featuredData || []);
+              })
+              .catch(err => console.error('Failed to fetch featured products:', err));
+          } else {
+            setHeroSlideshowProducts(data);
+          }
         })
-        .catch(err => console.error('Failed to fetch products:', err));
+        .catch(err => {
+          console.error('Failed to fetch hero slideshow products:', err);
+          // Fallback to featured products on error
+          getFeaturedProducts(5)
+            .then(featuredData => {
+              setHeroSlideshowProducts(featuredData || []);
+            })
+            .catch(err2 => console.error('Failed to fetch featured products:', err2));
+        });
     }
   }, []);
 
