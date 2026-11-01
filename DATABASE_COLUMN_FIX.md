@@ -8,6 +8,7 @@ The Supabase database is missing the following columns in the `products` table:
 - `shipping_info`
 - `return_info`
 - `care_info`
+- `strap_types`
 
 ## How to Add These Columns
 
@@ -21,7 +22,8 @@ ADD COLUMN IF NOT EXISTS short_description TEXT,
 ADD COLUMN IF NOT EXISTS full_description TEXT,
 ADD COLUMN IF NOT EXISTS shipping_info TEXT,
 ADD COLUMN IF NOT EXISTS return_info TEXT,
-ADD COLUMN IF NOT EXISTS care_info TEXT;
+ADD COLUMN IF NOT EXISTS care_info TEXT,
+ADD COLUMN IF NOT EXISTS strap_types TEXT[];
 ```
 5. Click **"Run"** or press `Ctrl+Enter`
 
@@ -31,6 +33,7 @@ After running this SQL:
 - Product creation will work with all fields
 - Product updates will work with all fields
 - Descriptions and shipping/return/care info will be saved to the database
+- Strap types will be saved to the database
 - No more PGRST204 errors
 
 ## Verify the Columns Were Added

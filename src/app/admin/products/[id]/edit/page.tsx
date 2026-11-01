@@ -75,7 +75,7 @@ function EditProductContent() {
           status: data.status || 'active',
           featured: data.featured || false,
           colors: Array.isArray(data.colors) ? data.colors.join(', ') : (data.colors || ''),
-          strapTypes: Array.isArray(data.strapTypes) ? data.strapTypes.join(', ') : (data.strapTypes || ''),
+          strapTypes: Array.isArray(data.strap_types) ? data.strap_types.join(', ') : (data.strapTypes || ''),
           specifications: JSON.stringify(data.specifications || {}),
           shortDescription: data.short_description || data.shortDescription || '',
           fullDescription: data.full_description || data.fullDescription || '',

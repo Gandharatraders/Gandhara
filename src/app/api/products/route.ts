@@ -52,7 +52,7 @@ export async function POST(request: Request) {
       return_info: body.returnInfo || '',
       care_info: body.careInfo || '',
       colors: body.colors || [],
-      strapTypes: body.strapTypes || [],
+      strap_types: body.strapTypes || [],
       specifications: body.specifications || {},
       images: body.images,
       video: body.video,

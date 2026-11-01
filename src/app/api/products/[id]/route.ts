@@ -79,7 +79,7 @@ export async function PUT(
         : body.colors;
     }
     if (body.strapTypes !== undefined) {
-      updatedProduct.strapTypes = typeof body.strapTypes === 'string'
+      updatedProduct.strap_types = typeof body.strapTypes === 'string'
         ? body.strapTypes.split(',').map((c: string) => c.trim())
         : body.strapTypes;
     }
