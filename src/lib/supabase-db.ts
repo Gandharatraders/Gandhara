@@ -1,5 +1,20 @@
 import { supabase } from './supabase';
 
+// Helper to convert snake_case to camelCase
+function toCamelCase(obj: any): any {
+  if (Array.isArray(obj)) {
+    return obj.map(toCamelCase);
+  } else if (obj !== null && typeof obj === 'object') {
+    const newObj: any = {};
+    for (const key in obj) {
+      const camelKey = key.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+      newObj[camelKey] = toCamelCase(obj[key]);
+    }
+    return newObj;
+  }
+  return obj;
+}
+
 // ==================== PRODUCTS ====================
 
 export async function getProducts() {
@@ -9,7 +24,7 @@ export async function getProducts() {
     .order('created_at', { ascending: false });
 
   if (error) throw error;
-  return data;
+  return toCamelCase(data);
 }
 
 export async function getProductById(id: string) {
@@ -20,7 +35,7 @@ export async function getProductById(id: string) {
     .single();
 
   if (error) throw error;
-  return data;
+  return toCamelCase(data);
 }
 
 export async function getProductBySlug(slug: string) {
@@ -31,7 +46,7 @@ export async function getProductBySlug(slug: string) {
     .single();
 
   if (error) throw error;
-  return data;
+  return toCamelCase(data);
 }
 
 export async function getFeaturedProducts(limit: number = 8) {
@@ -44,7 +59,7 @@ export async function getFeaturedProducts(limit: number = 8) {
     .limit(limit);
 
   if (error) throw error;
-  return data;
+  return toCamelCase(data);
 }
 
 export async function getProductsByCategory(category: string) {
@@ -56,7 +71,7 @@ export async function getProductsByCategory(category: string) {
     .order('created_at', { ascending: false });
 
   if (error) throw error;
-  return data;
+  return toCamelCase(data);
 }
 
 export async function createProduct(product: any) {
@@ -67,7 +82,7 @@ export async function createProduct(product: any) {
     .single();
 
   if (error) throw error;
-  return data;
+  return toCamelCase(data);
 }
 
 export async function updateProduct(id: string, product: any) {
@@ -79,7 +94,7 @@ export async function updateProduct(id: string, product: any) {
     .single();
 
   if (error) throw error;
-  return data;
+  return toCamelCase(data);
 }
 
 export async function deleteProduct(id: string) {
@@ -100,7 +115,7 @@ export async function getOrders() {
     .order('created_at', { ascending: false });
 
   if (error) throw error;
-  return data;
+  return toCamelCase(data);
 }
 
 export async function getOrderById(id: string) {
@@ -111,7 +126,7 @@ export async function getOrderById(id: string) {
     .single();
 
   if (error) throw error;
-  return data;
+  return toCamelCase(data);
 }
 
 export async function getOrderByNumber(orderNumber: string) {
@@ -122,7 +137,7 @@ export async function getOrderByNumber(orderNumber: string) {
     .single();
 
   if (error) throw error;
-  return data;
+  return toCamelCase(data);
 }
 
 export async function createOrder(order: any) {
@@ -133,7 +148,7 @@ export async function createOrder(order: any) {
     .single();
 
   if (error) throw error;
-  return data;
+  return toCamelCase(data);
 }
 
 export async function updateOrder(id: string, order: any) {
@@ -145,7 +160,7 @@ export async function updateOrder(id: string, order: any) {
     .single();
 
   if (error) throw error;
-  return data;
+  return toCamelCase(data);
 }
 
 export async function deleteOrder(id: string) {
@@ -166,7 +181,7 @@ export async function getReviews() {
     .order('created_at', { ascending: false });
 
   if (error) throw error;
-  return data;
+  return toCamelCase(data);
 }
 
 export async function getApprovedReviews() {
@@ -177,7 +192,7 @@ export async function getApprovedReviews() {
     .order('created_at', { ascending: false });
 
   if (error) throw error;
-  return data;
+  return toCamelCase(data);
 }
 
 export async function getReviewsByProductId(productId: string) {
@@ -189,7 +204,7 @@ export async function getReviewsByProductId(productId: string) {
     .order('created_at', { ascending: false });
 
   if (error) throw error;
-  return data;
+  return toCamelCase(data);
 }
 
 export async function getReviewById(id: string) {
@@ -200,7 +215,7 @@ export async function getReviewById(id: string) {
     .single();
 
   if (error) throw error;
-  return data;
+  return toCamelCase(data);
 }
 
 export async function createReview(review: any) {
@@ -211,7 +226,7 @@ export async function createReview(review: any) {
     .single();
 
   if (error) throw error;
-  return data;
+  return toCamelCase(data);
 }
 
 export async function updateReview(id: string, review: any) {
@@ -223,7 +238,7 @@ export async function updateReview(id: string, review: any) {
     .single();
 
   if (error) throw error;
-  return data;
+  return toCamelCase(data);
 }
 
 export async function deleteReview(id: string) {
@@ -244,7 +259,7 @@ export async function getMessages() {
     .order('created_at', { ascending: false });
 
   if (error) throw error;
-  return data;
+  return toCamelCase(data);
 }
 
 export async function getMessageById(id: string) {
@@ -255,7 +270,7 @@ export async function getMessageById(id: string) {
     .single();
 
   if (error) throw error;
-  return data;
+  return toCamelCase(data);
 }
 
 export async function createMessage(message: any) {
@@ -266,7 +281,7 @@ export async function createMessage(message: any) {
     .single();
 
   if (error) throw error;
-  return data;
+  return toCamelCase(data);
 }
 
 export async function updateMessage(id: string, message: any) {
@@ -278,7 +293,7 @@ export async function updateMessage(id: string, message: any) {
     .single();
 
   if (error) throw error;
-  return data;
+  return toCamelCase(data);
 }
 
 export async function deleteMessage(id: string) {
@@ -299,7 +314,7 @@ export async function getLaboratoryCases() {
     .order('created_at', { ascending: false });
 
   if (error) throw error;
-  return data;
+  return toCamelCase(data);
 }
 
 export async function getLaboratoryCaseById(id: string) {
@@ -310,7 +325,7 @@ export async function getLaboratoryCaseById(id: string) {
     .single();
 
   if (error) throw error;
-  return data;
+  return toCamelCase(data);
 }
 
 export async function getLaboratoryCaseByNumber(caseNumber: string) {
@@ -321,7 +336,7 @@ export async function getLaboratoryCaseByNumber(caseNumber: string) {
     .single();
 
   if (error) throw error;
-  return data;
+  return toCamelCase(data);
 }
 
 export async function createLaboratoryCase(labCase: any) {
@@ -332,7 +347,7 @@ export async function createLaboratoryCase(labCase: any) {
     .single();
 
   if (error) throw error;
-  return data;
+  return toCamelCase(data);
 }
 
 export async function updateLaboratoryCase(id: string, labCase: any) {
@@ -344,7 +359,7 @@ export async function updateLaboratoryCase(id: string, labCase: any) {
     .single();
 
   if (error) throw error;
-  return data;
+  return toCamelCase(data);
 }
 
 export async function deleteLaboratoryCase(id: string) {
