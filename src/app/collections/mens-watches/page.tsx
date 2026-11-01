@@ -38,8 +38,7 @@ export default function MensCollectionPage() {
     // Filter by brand
     if (filters.brand !== 'all') {
       filtered = filtered.filter((product) => {
-        const brandName = product.name.toLowerCase();
-        return brandName.includes(filters.brand.toLowerCase());
+        return product.brand && product.brand.toLowerCase() === filters.brand.toLowerCase();
       });
     }
 
