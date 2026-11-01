@@ -17,6 +17,21 @@ function toCamelCase(obj: any): any {
   return obj;
 }
 
+// Helper to convert camelCase to snake_case
+function toSnakeCase(obj: any): any {
+  if (Array.isArray(obj)) {
+    return obj.map(toSnakeCase);
+  } else if (obj !== null && typeof obj === 'object') {
+    const newObj: any = {};
+    for (const key in obj) {
+      const snakeKey = key.replace(/([A-Z])/g, '_$1').toLowerCase();
+      newObj[snakeKey] = toSnakeCase(obj[key]);
+    }
+    return newObj;
+  }
+  return obj;
+}
+
 export async function GET() {
   try {
     const cases = await getLaboratoryCases();
@@ -32,7 +47,7 @@ export async function POST(request: Request) {
     const body = await request.json();
 
     const newCase = {
-      ...body,
+      ...toSnakeCase(body),
       id: Date.now().toString(),
       case_number: generateCaseNumber(),
       type: body.type || 'watch',
@@ -41,11 +56,16 @@ export async function POST(request: Request) {
       updated_at: new Date().toISOString()
     };
 
+    console.log('Creating laboratory case:', JSON.stringify(newCase, null, 2));
+
     const labCase = await createLaboratoryCase(newCase);
+
+    console.log('Laboratory case created successfully:', labCase);
 
     return NextResponse.json(toCamelCase(labCase), { status: 201 });
   } catch (error) {
     console.error('POST laboratory case error:', error);
-    return NextResponse.json({ error: 'Failed to create case' }, { status: 500 });
+    console.error('Error details:', error instanceof Error ? error.message : 'Unknown error');
+    return NextResponse.json({ error: 'Failed to create case', details: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });
   }
 }

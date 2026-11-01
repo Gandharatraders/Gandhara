@@ -151,6 +151,11 @@ export default function WatchLaboratoryForm() {
           body: formDataUpload,
         });
 
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(`Failed to upload file ${file.name}: ${error.details || error.error}`);
+        }
+
         const result = await response.json();
         return {
           id: `upload-${index}`,
@@ -173,6 +178,11 @@ export default function WatchLaboratoryForm() {
           body: formDataUpload,
         });
 
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(`Failed to upload payment screenshot: ${error.details || error.error}`);
+        }
+
         const result = await response.json();
         paymentScreenshotData = {
           fileName: formData.paymentScreenshot.name,
@@ -192,6 +202,11 @@ export default function WatchLaboratoryForm() {
           method: 'POST',
           body: formDataUpload,
         });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(`Failed to upload proof of purchase: ${error.details || error.error}`);
+        }
 
         const result = await response.json();
         proofOfPurchaseData = {
@@ -229,12 +244,17 @@ export default function WatchLaboratoryForm() {
         }),
       });
 
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(`Failed to submit case: ${error.error || 'Unknown error'}`);
+      }
+
       const data = await response.json();
       setCaseNumber(data.caseNumber);
       setSubmitted(true);
     } catch (error) {
       console.error('Submission error:', error);
-      alert('Failed to submit case. Please try again.');
+      alert(error instanceof Error ? error.message : 'Failed to submit case. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
