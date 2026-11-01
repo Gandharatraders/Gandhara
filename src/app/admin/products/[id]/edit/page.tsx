@@ -33,6 +33,7 @@ function EditProductContent() {
     fullDescription: '',
     status: 'active',
     featured: false,
+    heroSlideshow: false,
     colors: '',
     strapTypes: '',
     specifications: '',
@@ -74,6 +75,7 @@ function EditProductContent() {
           availability: data.availability || 'in-stock',
           status: data.status || 'active',
           featured: data.featured || false,
+          heroSlideshow: data.heroSlideshow || false,
           colors: Array.isArray(data.colors) ? data.colors.join(', ') : (data.colors || ''),
           strapTypes: Array.isArray(data.strap_types || data.strapTypes) ? (data.strap_types || data.strapTypes).join(', ') : (data.strap_types || data.strapTypes || ''),
           specifications: JSON.stringify(data.specifications || {}),
@@ -425,6 +427,19 @@ function EditProductContent() {
                   />
                   <label htmlFor="featured" className="text-sm text-[#F5F5F5]">
                     Mark as Featured Product
+                  </label>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    id="heroSlideshow"
+                    checked={formData.heroSlideshow}
+                    onChange={(e) => setFormData({ ...formData, heroSlideshow: e.target.checked })}
+                    className="w-5 h-5 rounded border-[#292929] bg-[#151515] text-[#C7CBD0] focus:ring-2 focus:ring-[#C7CBD0] focus:ring-offset-0 focus:ring-offset-[#050505]"
+                  />
+                  <label htmlFor="heroSlideshow" className="text-sm text-[#F5F5F5]">
+                    Show in Hero Slideshow
                   </label>
                 </div>
               </div>

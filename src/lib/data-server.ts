@@ -1,5 +1,5 @@
 import { Product } from '@/types';
-import { getProducts, getFeaturedProducts, getProductBySlug, getProductsByCategory } from './supabase-db';
+import { getProducts, getFeaturedProducts, getHeroSlideshowProducts, getProductBySlug, getProductsByCategory } from './supabase-db';
 
 // Server-side function to get products (for server components)
 export async function getProductsServer(): Promise<Product[]> {
@@ -9,6 +9,11 @@ export async function getProductsServer(): Promise<Product[]> {
 // Server-side function to get featured products (for server components)
 export async function getFeaturedProductsServer(limit: number = 8): Promise<Product[]> {
   return await getFeaturedProducts(limit);
+}
+
+// Server-side function to get hero slideshow products (for server components)
+export async function getHeroSlideshowProductsServer(limit: number = 5): Promise<Product[]> {
+  return await getHeroSlideshowProducts(limit);
 }
 
 // Server-side function to get product by slug

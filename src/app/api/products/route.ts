@@ -61,6 +61,7 @@ export async function POST(request: Request) {
       availability: body.availability,
       status: body.status || 'active',
       featured: body.featured || false,
+      hero_slideshow: body.heroSlideshow || false,
       short_description: body.shortDescription || '',
       full_description: body.fullDescription || '',
       shipping_info: body.shippingInfo || '',

@@ -11,6 +11,7 @@ export interface Product {
   salePrice?: number;
   status: 'active' | 'draft' | 'archived';
   featured: boolean;
+  heroSlideshow: boolean;
   availability: 'in-stock' | 'low-stock' | 'out-of-stock';
   stockQuantity: number;
   colors: string[];

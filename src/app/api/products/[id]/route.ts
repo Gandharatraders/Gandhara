@@ -83,6 +83,7 @@ export async function PUT(
     if (body.availability !== undefined) updatedProduct.availability = body.availability;
     if (body.status !== undefined) updatedProduct.status = body.status;
     if (body.featured !== undefined) updatedProduct.featured = body.featured;
+    if (body.heroSlideshow !== undefined) updatedProduct.hero_slideshow = body.heroSlideshow;
     if (body.shortDescription !== undefined) updatedProduct.short_description = body.shortDescription;
     if (body.fullDescription !== undefined) updatedProduct.full_description = body.fullDescription;
     if (body.shippingInfo !== undefined) updatedProduct.shipping_info = body.shippingInfo;

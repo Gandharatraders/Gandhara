@@ -62,6 +62,19 @@ export async function getFeaturedProducts(limit: number = 8) {
   return toCamelCase(data);
 }
 
+export async function getHeroSlideshowProducts(limit: number = 5) {
+  const { data, error } = await supabase
+    .from('products')
+    .select('*')
+    .eq('hero_slideshow', true)
+    .eq('status', 'active')
+    .order('created_at', { ascending: false })
+    .limit(limit);
+
+  if (error) throw error;
+  return toCamelCase(data);
+}
+
 export async function getProductsByCategory(category: string) {
   const { data, error } = await supabase
     .from('products')

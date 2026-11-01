@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { getSettings } from '@/lib/settings';
 import ProductSlideshow from './ProductSlideshow';
-import { getFeaturedProducts } from '@/lib/supabase-db';
+import { getHeroSlideshowProducts } from '@/lib/supabase-db';
 
 export default function Hero() {
   const [settings, setSettings] = useState(() => {
@@ -18,7 +18,7 @@ export default function Hero() {
   const [currentText, setCurrentText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const [textIndex, setTextIndex] = useState(0);
-  const [featuredProducts, setFeaturedProducts] = useState<any[]>([]);
+  const [heroSlideshowProducts, setHeroSlideshowProducts] = useState<any[]>([]);
 
   const seoTexts = [
     'Luxury',
@@ -32,11 +32,11 @@ export default function Hero() {
       // Clear old localStorage settings to prevent hydration mismatch
       localStorage.removeItem('site-settings');
       setSettings(getSettings());
-      
-      // Fetch featured products for slideshow using Supabase
-      getFeaturedProducts(5)
+
+      // Fetch hero slideshow products using Supabase
+      getHeroSlideshowProducts(5)
         .then(data => {
-          setFeaturedProducts(data || []);
+          setHeroSlideshowProducts(data || []);
         })
         .catch(err => console.error('Failed to fetch products:', err));
     }
@@ -137,7 +137,7 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="relative"
           >
-            <ProductSlideshow products={featuredProducts} />
+            <ProductSlideshow products={heroSlideshowProducts} />
 
             {/* Slideshow Caption */}
             <div className="mt-4 text-center">
