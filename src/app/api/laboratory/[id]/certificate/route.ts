@@ -2,6 +2,21 @@ import { NextResponse } from 'next/server';
 import { getLaboratoryCaseById } from '@/lib/supabase-db';
 import { generateCertificateHTML } from '@/lib/certificate';
 
+// Helper to convert snake_case to camelCase
+function toCamelCase(obj: any): any {
+  if (Array.isArray(obj)) {
+    return obj.map(toCamelCase);
+  } else if (obj !== null && typeof obj === 'object') {
+    const newObj: any = {};
+    for (const key in obj) {
+      const camelKey = key.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+      newObj[camelKey] = toCamelCase(obj[key]);
+    }
+    return newObj;
+  }
+  return obj;
+}
+
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -10,7 +25,7 @@ export async function POST(
 
   try {
     const body = await request.json();
-    const labCase = await getLaboratoryCaseById(id);
+    const labCase = toCamelCase(await getLaboratoryCaseById(id));
 
     if (!labCase) {
       return NextResponse.json({ error: 'Case not found' }, { status: 404 });
@@ -19,18 +34,18 @@ export async function POST(
     const { type = 'watch', assessment } = body;
 
     const certificateData = {
-      caseNumber: labCase.case_number,
+      caseNumber: labCase.caseNumber,
       type: type,
       details: {
-        brand: labCase.watch_details?.brand || '',
-        model: labCase.watch_details?.model || '',
-        referenceNumber: labCase.watch_details?.referenceNumber,
-        serialNumber: labCase.watch_details?.serialNumber,
-        purchaseDate: labCase.watch_details?.purchaseDate,
-        purchaseLocation: labCase.watch_details?.purchaseLocation,
-        city: labCase.watch_details?.city,
-        country: labCase.watch_details?.country,
-        observations: labCase.watch_details?.observations,
+        brand: labCase.watchDetails?.brand || '',
+        model: labCase.watchDetails?.model || '',
+        referenceNumber: labCase.watchDetails?.referenceNumber,
+        serialNumber: labCase.watchDetails?.serialNumber,
+        purchaseDate: labCase.watchDetails?.purchaseDate,
+        purchaseLocation: labCase.watchDetails?.purchaseLocation,
+        city: labCase.watchDetails?.city,
+        country: labCase.watchDetails?.country,
+        observations: labCase.watchDetails?.observations,
       },
       assessment: {
         isAuthentic: assessment.isAuthentic,
@@ -50,7 +65,7 @@ export async function POST(
     return new NextResponse(certificateHTML, {
       headers: {
         'Content-Type': 'text/html',
-        'Content-Disposition': `attachment; filename="certificate-${labCase.case_number}.html"`,
+        'Content-Disposition': `attachment; filename="certificate-${labCase.caseNumber}.html"`,
       },
     });
   } catch (error) {
