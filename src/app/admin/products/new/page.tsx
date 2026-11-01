@@ -106,6 +106,18 @@ export default function NewProductPage() {
     setImageUrls(imageUrls.filter((_, i) => i !== index));
   };
 
+  const moveImage = (fromIndex: number, toIndex: number) => {
+    const newImageUrls = [...imageUrls];
+    const [movedUrl] = newImageUrls.splice(fromIndex, 1);
+    newImageUrls.splice(toIndex, 0, movedUrl);
+    setImageUrls(newImageUrls);
+
+    const newImages = [...images];
+    const [movedImage] = newImages.splice(fromIndex, 1);
+    newImages.splice(toIndex, 0, movedImage);
+    setImages(newImages);
+  };
+
   const removeVideo = () => {
     setVideo(null);
   };
@@ -492,7 +504,7 @@ export default function NewProductPage() {
             <div className="space-y-4 pt-4 border-t border-[#292929]">
               <h2 className="text-lg font-semibold text-[#F5F5F5]">Product Images</h2>
               <p className="text-sm text-[#A6A6A6]">
-                Upload minimum 3 images (maximum 10) showing different angles of the watch.
+                Upload minimum 3 images (maximum 10). <span className="text-[#E50920] font-semibold">First image will be the main product image.</span>
               </p>
 
               <div className="bg-[#151515] rounded-xl p-6 border-2 border-dashed border-[#292929]">
@@ -518,6 +530,9 @@ export default function NewProductPage() {
 
               {images.length > 0 && (
                 <div className="space-y-3">
+                  <p className="text-sm text-[#A6A6A6]">
+                    <span className="text-[#E50920] font-semibold">Note:</span> First image will be the main product image. Use arrows to reorder.
+                  </p>
                   <p className="text-sm font-medium text-[#F5F5F5]">
                     Uploaded Images ({images.length}/10)
                   </p>
@@ -525,20 +540,50 @@ export default function NewProductPage() {
                     {images.map((file, index) => (
                       <div
                         key={index}
-                        className="relative bg-[#151515] rounded-lg overflow-hidden aspect-square"
+                        className={`relative bg-[#151515] rounded-lg overflow-hidden aspect-square border-2 transition-all ${
+                          index === 0 ? 'border-[#E50920] shadow-lg shadow-[#E50920]/20' : 'border-[#292929]'
+                        }`}
                       >
                         <img
                           src={URL.createObjectURL(file)}
                           alt={`Upload ${index + 1}`}
                           className="w-full h-full object-cover"
                         />
-                        <button
-                          type="button"
-                          onClick={() => removeImage(index)}
-                          className="absolute top-2 right-2 p-1 bg-[#050505]/80 rounded-full hover:bg-[#E50920] transition-colors"
-                        >
-                          <X className="w-4 h-4 text-white" />
-                        </button>
+                        {index === 0 && (
+                          <div className="absolute top-2 left-2 bg-[#E50920] text-white text-[10px] font-bold px-2 py-1 rounded">
+                            MAIN
+                          </div>
+                        )}
+                        <div className="absolute top-2 right-2 flex gap-1">
+                          {index > 0 && (
+                            <button
+                              type="button"
+                              onClick={() => moveImage(index, index - 1)}
+                              className="w-6 h-6 bg-[#101010] hover:bg-[#292929] rounded-full flex items-center justify-center text-white transition-colors"
+                              title="Move left"
+                            >
+                              ←
+                            </button>
+                          )}
+                          {index < images.length - 1 && (
+                            <button
+                              type="button"
+                              onClick={() => moveImage(index, index + 1)}
+                              className="w-6 h-6 bg-[#101010] hover:bg-[#292929] rounded-full flex items-center justify-center text-white transition-colors"
+                              title="Move right"
+                            >
+                              →
+                            </button>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => removeImage(index)}
+                            className="w-6 h-6 bg-[#E50920] hover:bg-[#ff3333] rounded-full flex items-center justify-center text-white transition-colors"
+                            title="Remove"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
                       </div>
                     ))}
                   </div>

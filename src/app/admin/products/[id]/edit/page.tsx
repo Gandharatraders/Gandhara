@@ -254,6 +254,18 @@ function EditProductContent() {
     setImageUrls(imageUrls.filter((_, i) => i !== index));
   };
 
+  const moveImage = (fromIndex: number, toIndex: number) => {
+    const newImageUrls = [...imageUrls];
+    const [movedUrl] = newImageUrls.splice(fromIndex, 1);
+    newImageUrls.splice(toIndex, 0, movedUrl);
+    setImageUrls(newImageUrls);
+
+    const newImages = [...images];
+    const [movedImage] = newImages.splice(fromIndex, 1);
+    newImages.splice(toIndex, 0, movedImage);
+    setImages(newImages);
+  };
+
   const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -493,11 +505,14 @@ function EditProductContent() {
             {/* Media Upload */}
             <div className="space-y-4 pt-4 border-t border-[#292929]">
               <h2 className="text-lg font-semibold text-[#F5F5F5]">Media Upload</h2>
-              
+
               <div>
                 <label className="block text-sm text-[#A6A6A6] mb-2">
                   Product Images (2-5 images)
                 </label>
+                <p className="text-xs text-[#A6A6A6] mb-2">
+                  <span className="text-[#E50920] font-semibold">First image will be the main product image.</span> Upload new images to replace existing ones.
+                </p>
                 <div className="border-2 border-dashed border-[#292929] rounded-lg p-8 text-center">
                   <input
                     type="file"
@@ -519,23 +534,58 @@ function EditProductContent() {
               </div>
 
               {imageUrls.length > 0 && (
-                <div className="grid grid-cols-5 gap-2">
-                  {imageUrls.map((url, index) => (
-                    <div key={index} className="relative aspect-square bg-[#151515] rounded-lg overflow-hidden">
-                      <img
-                        src={url}
-                        alt={`Upload ${index + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => removeImage(index)}
-                        className="absolute top-1 right-1 w-6 h-6 bg-[#E50920] rounded-full flex items-center justify-center text-white"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
-                  ))}
+                <div className="space-y-3">
+                  <p className="text-sm text-[#A6A6A6]">
+                    <span className="text-[#E50920] font-semibold">Note:</span> First image will be the main product image. Drag or use arrows to reorder.
+                  </p>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+                    {imageUrls.map((url, index) => (
+                      <div key={index} className={`relative aspect-square bg-[#151515] rounded-lg overflow-hidden border-2 transition-all ${
+                        index === 0 ? 'border-[#E50920] shadow-lg shadow-[#E50920]/20' : 'border-[#292929]'
+                      }`}>
+                        <img
+                          src={url}
+                          alt={`Upload ${index + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                        {index === 0 && (
+                          <div className="absolute top-2 left-2 bg-[#E50920] text-white text-[10px] font-bold px-2 py-1 rounded">
+                            MAIN
+                          </div>
+                        )}
+                        <div className="absolute top-1 right-1 flex gap-1">
+                          {index > 0 && (
+                            <button
+                              type="button"
+                              onClick={() => moveImage(index, index - 1)}
+                              className="w-6 h-6 bg-[#101010] hover:bg-[#292929] rounded-full flex items-center justify-center text-white transition-colors"
+                              title="Move left"
+                            >
+                              ←
+                            </button>
+                          )}
+                          {index < imageUrls.length - 1 && (
+                            <button
+                              type="button"
+                              onClick={() => moveImage(index, index + 1)}
+                              className="w-6 h-6 bg-[#101010] hover:bg-[#292929] rounded-full flex items-center justify-center text-white transition-colors"
+                              title="Move right"
+                            >
+                              →
+                            </button>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => removeImage(index)}
+                            className="w-6 h-6 bg-[#E50920] hover:bg-[#ff3333] rounded-full flex items-center justify-center text-white transition-colors"
+                            title="Remove"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
 
