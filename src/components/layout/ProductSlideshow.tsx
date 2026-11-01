@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
+import { formatPrice } from '@/lib/utils';
 
 interface Product {
   id: string;
@@ -13,6 +14,7 @@ interface Product {
     gallery2?: string;
   };
   price: number;
+  salePrice?: number;
   category: string;
 }
 
@@ -75,9 +77,20 @@ export default function ProductSlideshow({ products }: ProductSlideshowProps) {
               <h3 className="text-xl font-semibold text-[#F5F5F5] mb-2 line-clamp-1">
                 {currentProduct.name}
               </h3>
-              <p className="text-lg text-[#E50920] font-semibold">
-                PKR {currentProduct.price.toLocaleString()}
-              </p>
+              {currentProduct.salePrice ? (
+                <div className="flex items-center gap-2">
+                  <p className="text-lg text-[#E50920] font-semibold">
+                    {formatPrice(currentProduct.salePrice)}
+                  </p>
+                  <p className="text-sm text-[#A6A6A6] line-through">
+                    {formatPrice(currentProduct.price)}
+                  </p>
+                </div>
+              ) : (
+                <p className="text-lg text-[#E50920] font-semibold">
+                  {formatPrice(currentProduct.price)}
+                </p>
+              )}
             </motion.div>
           </div>
         </motion.div>
