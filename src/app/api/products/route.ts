@@ -1,6 +1,21 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 
+// Helper to convert snake_case to camelCase
+function toCamelCase(obj: any): any {
+  if (Array.isArray(obj)) {
+    return obj.map(toCamelCase);
+  } else if (obj !== null && typeof obj === 'object') {
+    const newObj: any = {};
+    for (const key in obj) {
+      const camelKey = key.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+      newObj[camelKey] = toCamelCase(obj[key]);
+    }
+    return newObj;
+  }
+  return obj;
+}
+
 export async function GET() {
   try {
     const { data, error } = await supabaseAdmin
@@ -13,7 +28,7 @@ export async function GET() {
       throw error;
     }
 
-    return NextResponse.json(data);
+    return NextResponse.json(toCamelCase(data));
   } catch (error) {
     console.error('GET products error:', error);
     return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
@@ -77,7 +92,7 @@ export async function POST(request: Request) {
     
     console.log('Product created successfully:', data);
     
-    return NextResponse.json(data, { status: 201 });
+    return NextResponse.json(toCamelCase(data), { status: 201 });
   } catch (error) {
     console.error('POST product error:', error);
     console.error('Error stack:', error instanceof Error ? error.stack : 'No stack');
