@@ -68,8 +68,7 @@ export async function PUT(
     if (body.availability !== undefined) updatedProduct.availability = body.availability;
     if (body.status !== undefined) updatedProduct.status = body.status;
     if (body.featured !== undefined) updatedProduct.featured = body.featured;
-    if (body.shortDescription !== undefined) updatedProduct.shortDescription = body.shortDescription;
-    if (body.fullDescription !== undefined) updatedProduct.fullDescription = body.fullDescription;
+    // Exclude shortDescription, fullDescription, shippingInfo, returnInfo, careInfo - they don't exist in database
     if (body.colors !== undefined) {
       updatedProduct.colors = typeof body.colors === 'string' 
         ? body.colors.split(',').map((c: string) => c.trim())

@@ -185,7 +185,7 @@ export default function NewProductPage() {
       };
 
       // Remove fields that don't exist in database
-      const { shippingInfo, returnInfo, careInfo, ...productDataToSend } = productData;
+      const { shippingInfo, returnInfo, careInfo, shortDescription, fullDescription, ...productDataToSend } = productData;
 
       const response = await fetch('/api/products', {
         method: 'POST',
@@ -353,6 +353,8 @@ export default function NewProductPage() {
                   value={formData.shortDescription}
                   onChange={(e) => setFormData({ ...formData, shortDescription: e.target.value })}
                   placeholder="Brief product description"
+                  disabled
+                  className="opacity-50"
                 />
               </div>
 
@@ -365,7 +367,8 @@ export default function NewProductPage() {
                   value={formData.fullDescription}
                   onChange={(e) => setFormData({ ...formData, fullDescription: e.target.value })}
                   placeholder="Detailed product description"
-                  className="w-full px-4 py-2.5 bg-[#151515] border border-[#292929] rounded-lg text-[#F5F5F5] placeholder-[#555555] focus:outline-none focus:ring-2 focus:ring-[#E50920] focus:border-transparent resize-none"
+                  className="w-full px-4 py-2.5 bg-[#151515] border border-[#292929] rounded-lg text-[#F5F5F5] placeholder-[#555555] focus:outline-none focus:ring-2 focus:ring-[#E50920] focus:border-transparent resize-none opacity-50"
+                  disabled
                 />
               </div>
             </div>

@@ -33,7 +33,7 @@ export async function POST(request: Request) {
     console.log('Product data received:', JSON.stringify(body, null, 2));
     
     // Exclude fields that don't exist in database
-    const { shippingInfo, returnInfo, careInfo, ...dbBody } = body;
+    const { shippingInfo, returnInfo, careInfo, shortDescription, fullDescription, ...dbBody } = body;
     
     const newProduct = {
       ...dbBody,

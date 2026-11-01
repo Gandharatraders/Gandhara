@@ -79,6 +79,8 @@ function EditProductContent() {
           colors: Array.isArray(data.colors) ? data.colors.join(', ') : (data.colors || ''),
           strapTypes: Array.isArray(data.strapTypes) ? data.strapTypes.join(', ') : (data.strapTypes || ''),
           specifications: JSON.stringify(data.specifications || {}),
+          shortDescription: '',
+          fullDescription: '',
           shippingInfo: '',
           returnInfo: '',
           careInfo: ''
@@ -201,7 +203,7 @@ function EditProductContent() {
       };
 
       // Remove fields that don't exist in database
-      const { shippingInfo, returnInfo, careInfo, ...productDataToSend } = productData;
+      const { shippingInfo, returnInfo, careInfo, shortDescription, fullDescription, ...productDataToSend } = productData;
 
       const { id } = await params;
       const response = await fetch(`/api/products/${id}`, {
@@ -425,10 +427,11 @@ function EditProductContent() {
                   Short Description
                 </label>
                 <Input
-                  required
                   value={formData.shortDescription}
                   onChange={(e) => setFormData({ ...formData, shortDescription: e.target.value })}
                   placeholder="Brief product description"
+                  disabled
+                  className="opacity-50"
                 />
               </div>
 
@@ -437,12 +440,12 @@ function EditProductContent() {
                   Full Description
                 </label>
                 <textarea
-                  required
                   rows={4}
                   value={formData.fullDescription}
                   onChange={(e) => setFormData({ ...formData, fullDescription: e.target.value })}
                   placeholder="Detailed product description"
-                  className="w-full px-4 py-2.5 bg-[#151515] border border-[#292929] rounded-lg text-[#F5F5F5] placeholder-[#555555] focus:outline-none focus:ring-2 focus:ring-[#E50920] focus:border-transparent resize-none"
+                  className="w-full px-4 py-2.5 bg-[#151515] border border-[#292929] rounded-lg text-[#F5F5F5] placeholder-[#555555] focus:outline-none focus:ring-2 focus:ring-[#E50920] focus:border-transparent resize-none opacity-50"
+                  disabled
                 />
               </div>
             </div>
