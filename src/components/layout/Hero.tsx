@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { getSettings } from '@/lib/settings';
 import ProductSlideshow from './ProductSlideshow';
-import { getHeroSlideshowProducts } from '@/lib/supabase-db';
+import { getHeroSlideshowProducts, getFeaturedProducts } from '@/lib/supabase-db';
 
 export default function Hero() {
   const [settings, setSettings] = useState(() => {
