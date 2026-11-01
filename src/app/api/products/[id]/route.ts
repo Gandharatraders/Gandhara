@@ -63,12 +63,16 @@ export async function PUT(
     if (body.category !== undefined) updatedProduct.category = body.category;
     if (body.brand !== undefined) updatedProduct.brand = body.brand;
     if (body.price !== undefined) updatedProduct.price = parseFloat(body.price) || 0;
-    if (body.salePrice !== undefined) updatedProduct.salePrice = body.salePrice ? parseFloat(body.salePrice) : null;
-    if (body.stockQuantity !== undefined) updatedProduct.stockQuantity = parseInt(body.stockQuantity) || 0;
+    if (body.salePrice !== undefined) updatedProduct.sale_price = body.salePrice ? parseFloat(body.salePrice) : null;
+    if (body.stockQuantity !== undefined) updatedProduct.stock_quantity = parseInt(body.stockQuantity) || 0;
     if (body.availability !== undefined) updatedProduct.availability = body.availability;
     if (body.status !== undefined) updatedProduct.status = body.status;
     if (body.featured !== undefined) updatedProduct.featured = body.featured;
-    // Exclude shortDescription, fullDescription, shippingInfo, returnInfo, careInfo - they don't exist in database
+    if (body.shortDescription !== undefined) updatedProduct.short_description = body.shortDescription;
+    if (body.fullDescription !== undefined) updatedProduct.full_description = body.fullDescription;
+    if (body.shippingInfo !== undefined) updatedProduct.shipping_info = body.shippingInfo;
+    if (body.returnInfo !== undefined) updatedProduct.return_info = body.returnInfo;
+    if (body.careInfo !== undefined) updatedProduct.care_info = body.careInfo;
     if (body.colors !== undefined) {
       updatedProduct.colors = typeof body.colors === 'string' 
         ? body.colors.split(',').map((c: string) => c.trim())
@@ -89,7 +93,6 @@ export async function PUT(
         updatedProduct.specifications = {};
       }
     }
-    // Exclude shippingInfo, returnInfo, careInfo as they don't exist in database
     if (body.images !== undefined) updatedProduct.images = body.images;
     if (body.video !== undefined) updatedProduct.video = body.video;
 

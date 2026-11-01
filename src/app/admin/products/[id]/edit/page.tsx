@@ -72,18 +72,16 @@ function EditProductContent() {
           salePrice: (data.salePrice || 0).toString(),
           stockQuantity: (data.stockQuantity || 0).toString(),
           availability: data.availability || 'in-stock',
-          shortDescription: data.shortDescription || '',
-          fullDescription: data.fullDescription || '',
           status: data.status || 'active',
           featured: data.featured || false,
           colors: Array.isArray(data.colors) ? data.colors.join(', ') : (data.colors || ''),
           strapTypes: Array.isArray(data.strapTypes) ? data.strapTypes.join(', ') : (data.strapTypes || ''),
           specifications: JSON.stringify(data.specifications || {}),
-          shortDescription: '',
-          fullDescription: '',
-          shippingInfo: '',
-          returnInfo: '',
-          careInfo: ''
+          shortDescription: data.short_description || data.shortDescription || '',
+          fullDescription: data.full_description || data.fullDescription || '',
+          shippingInfo: data.shipping_info || data.shippingInfo || '',
+          returnInfo: data.return_info || data.returnInfo || '',
+          careInfo: data.care_info || data.careInfo || ''
         });
         
         // Set existing image URLs
@@ -202,14 +200,11 @@ function EditProductContent() {
         updatedAt: new Date().toISOString()
       };
 
-      // Remove fields that don't exist in database
-      const { shippingInfo, returnInfo, careInfo, shortDescription, fullDescription, ...productDataToSend } = productData;
-
       const { id } = await params;
       const response = await fetch(`/api/products/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(productDataToSend)
+        body: JSON.stringify(productData)
       });
 
       if (response.ok) {
@@ -430,8 +425,6 @@ function EditProductContent() {
                   value={formData.shortDescription}
                   onChange={(e) => setFormData({ ...formData, shortDescription: e.target.value })}
                   placeholder="Brief product description"
-                  disabled
-                  className="opacity-50"
                 />
               </div>
 
@@ -444,8 +437,7 @@ function EditProductContent() {
                   value={formData.fullDescription}
                   onChange={(e) => setFormData({ ...formData, fullDescription: e.target.value })}
                   placeholder="Detailed product description"
-                  className="w-full px-4 py-2.5 bg-[#151515] border border-[#292929] rounded-lg text-[#F5F5F5] placeholder-[#555555] focus:outline-none focus:ring-2 focus:ring-[#E50920] focus:border-transparent resize-none opacity-50"
-                  disabled
+                  className="w-full px-4 py-2.5 bg-[#151515] border border-[#292929] rounded-lg text-[#F5F5F5] placeholder-[#555555] focus:outline-none focus:ring-2 focus:ring-[#E50920] focus:border-transparent resize-none"
                 />
               </div>
             </div>
@@ -647,8 +639,6 @@ function EditProductContent() {
                   value={formData.shippingInfo}
                   onChange={(e) => setFormData({ ...formData, shippingInfo: e.target.value })}
                   placeholder="Shipping information"
-                  disabled
-                  className="opacity-50"
                 />
               </div>
 
@@ -660,8 +650,6 @@ function EditProductContent() {
                   value={formData.returnInfo}
                   onChange={(e) => setFormData({ ...formData, returnInfo: e.target.value })}
                   placeholder="Return policy"
-                  disabled
-                  className="opacity-50"
                 />
               </div>
 
@@ -673,8 +661,6 @@ function EditProductContent() {
                   value={formData.careInfo}
                   onChange={(e) => setFormData({ ...formData, careInfo: e.target.value })}
                   placeholder="Care instructions"
-                  disabled
-                  className="opacity-50"
                 />
               </div>
             </div>

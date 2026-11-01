@@ -184,13 +184,10 @@ export default function NewProductPage() {
         video: videoUrl
       };
 
-      // Remove fields that don't exist in database
-      const { shippingInfo, returnInfo, careInfo, shortDescription, fullDescription, ...productDataToSend } = productData;
-
       const response = await fetch('/api/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(productDataToSend)
+        body: JSON.stringify(productData)
       });
 
       if (response.ok) {
@@ -353,8 +350,6 @@ export default function NewProductPage() {
                   value={formData.shortDescription}
                   onChange={(e) => setFormData({ ...formData, shortDescription: e.target.value })}
                   placeholder="Brief product description"
-                  disabled
-                  className="opacity-50"
                 />
               </div>
 
@@ -367,8 +362,7 @@ export default function NewProductPage() {
                   value={formData.fullDescription}
                   onChange={(e) => setFormData({ ...formData, fullDescription: e.target.value })}
                   placeholder="Detailed product description"
-                  className="w-full px-4 py-2.5 bg-[#151515] border border-[#292929] rounded-lg text-[#F5F5F5] placeholder-[#555555] focus:outline-none focus:ring-2 focus:ring-[#E50920] focus:border-transparent resize-none opacity-50"
-                  disabled
+                  className="w-full px-4 py-2.5 bg-[#151515] border border-[#292929] rounded-lg text-[#F5F5F5] placeholder-[#555555] focus:outline-none focus:ring-2 focus:ring-[#E50920] focus:border-transparent resize-none"
                 />
               </div>
             </div>
@@ -468,8 +462,6 @@ export default function NewProductPage() {
                   value={formData.shippingInfo}
                   onChange={(e) => setFormData({ ...formData, shippingInfo: e.target.value })}
                   placeholder="Shipping information"
-                  disabled
-                  className="opacity-50"
                 />
               </div>
 
@@ -481,8 +473,6 @@ export default function NewProductPage() {
                   value={formData.returnInfo}
                   onChange={(e) => setFormData({ ...formData, returnInfo: e.target.value })}
                   placeholder="Return policy"
-                  disabled
-                  className="opacity-50"
                 />
               </div>
 
@@ -494,8 +484,6 @@ export default function NewProductPage() {
                   value={formData.careInfo}
                   onChange={(e) => setFormData({ ...formData, careInfo: e.target.value })}
                   placeholder="Care instructions"
-                  disabled
-                  className="opacity-50"
                 />
               </div>
             </div>

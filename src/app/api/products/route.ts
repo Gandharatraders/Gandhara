@@ -32,13 +32,30 @@ export async function POST(request: Request) {
     const body = await request.json();
     console.log('Product data received:', JSON.stringify(body, null, 2));
     
-    // Exclude fields that don't exist in database
-    const { shippingInfo, returnInfo, careInfo, shortDescription, fullDescription, ...dbBody } = body;
-    
-    const newProduct = {
-      ...dbBody,
+    // Convert camelCase to snake_case for Supabase
+    const newProduct: any = {
       id: Date.now().toString(),
+      name: body.name,
+      sku: body.sku,
+      slug: body.slug,
+      category: body.category,
+      brand: body.brand,
+      price: body.price ? parseFloat(body.price) : 0,
+      sale_price: body.salePrice ? parseFloat(body.salePrice) : null,
+      stock_quantity: body.stockQuantity ? parseInt(body.stockQuantity) : 0,
+      availability: body.availability,
+      status: body.status || 'active',
       featured: body.featured || false,
+      short_description: body.shortDescription || '',
+      full_description: body.fullDescription || '',
+      shipping_info: body.shippingInfo || '',
+      return_info: body.returnInfo || '',
+      care_info: body.careInfo || '',
+      colors: body.colors || [],
+      strapTypes: body.strapTypes || [],
+      specifications: body.specifications || {},
+      images: body.images,
+      video: body.video,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     };
