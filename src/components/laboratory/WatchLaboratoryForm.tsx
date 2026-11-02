@@ -39,6 +39,7 @@ export default function WatchLaboratoryForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [caseNumber, setCaseNumber] = useState('');
+  const [paymentCompleted, setPaymentCompleted] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -168,7 +169,7 @@ export default function WatchLaboratoryForm() {
 
       {/* Progress Steps */}
       <div className="flex items-center justify-between mb-12">
-        {[1, 2].map((s) => (
+        {[1, 2, 3].map((s) => (
           <div key={s} className="flex items-center">
             <div
               className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${
@@ -179,7 +180,7 @@ export default function WatchLaboratoryForm() {
             >
               {step > s ? <Check className="w-5 h-5" /> : s}
             </div>
-            {s < 2 && (
+            {s < 3 && (
               <div
                 className={`w-24 h-1 mx-2 ${
                   step > s ? 'bg-[#E50920]' : 'bg-[#292929]'
@@ -282,13 +283,117 @@ export default function WatchLaboratoryForm() {
             className="w-full"
             disabled={!formData.brand || !formData.model || !formData.city}
           >
-            Continue to WhatsApp Instructions
+            Continue to Payment
           </Button>
         </div>
       )}
 
-      {/* Step 2: WhatsApp Instructions */}
+      {/* Step 2: Payment */}
       {step === 2 && (
+        <div className="space-y-6">
+          <h2 className="text-2xl font-light text-[#F5F5F5]">
+            Step 2: <span className="font-semibold text-[#C7CBD0]">Payment</span>
+          </h2>
+          <p className="text-[#A6A6A6]">
+            A payment of 1,000 PKR is required to proceed with the authentication assessment.
+          </p>
+
+          <div className="bg-[#151515] rounded-xl p-6 border border-[#292929]">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <p className="text-[#A6A6A6] text-sm">Authentication Fee</p>
+                <p className="text-3xl font-semibold text-[#C7CBD0]">PKR 1,000</p>
+              </div>
+              <div className="w-16 h-16 bg-[#E50920]/20 rounded-full flex items-center justify-center">
+                <svg className="w-8 h-8 text-[#E50920]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </div>
+            </div>
+
+            <div className="bg-[#101010] rounded-lg p-4 mb-4 border border-[#292929]">
+              <p className="text-xs text-[#E50920] font-semibold mb-3 uppercase tracking-wider">Bank Account Details</p>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-[#A6A6A6]">Account Title:</span>
+                  <span className="text-[#F5F5F5] font-medium">SALMAN KHAN</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-[#A6A6A6]">Account Number:</span>
+                  <span className="text-[#F5F5F5] font-medium">03171010527808</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-[#A6A6A6]">IBAN:</span>
+                  <span className="text-[#F5F5F5] font-medium text-xs">PK67ALFH0317001010527808</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-[#A6A6A6]">Branch Name:</span>
+                  <span className="text-[#F5F5F5] font-medium">Dalazak Road Branch</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-[#A6A6A6]">Branch Code:</span>
+                  <span className="text-[#F5F5F5] font-medium">0317</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-[#A6A6A6]">Bank Name:</span>
+                  <span className="text-[#F5F5F5] font-medium">Bank Alfalah</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3 text-sm text-[#A6A6A6]">
+              <div className="flex items-center gap-2">
+                <Check className="w-4 h-4 text-green-500" />
+                <span>Professional authenticity assessment</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Check className="w-4 h-4 text-green-500" />
+                <span>Expert analysis by watch specialists</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Check className="w-4 h-4 text-green-500" />
+                <span>Detailed case report with reference number</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Check className="w-4 h-4 text-green-500" />
+                <span>Case tracking support</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-[#101010] rounded-lg p-4 flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-[#E50920] flex-shrink-0 mt-0.5" />
+            <p className="text-sm text-[#A6A6A6]">
+              After making the payment, click "I Have Paid" to proceed to the next step where you'll receive instructions to send your photos and video via WhatsApp.
+            </p>
+          </div>
+
+          <div className="flex gap-4">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setStep(1)}
+              className="flex-1"
+            >
+              Back
+            </Button>
+            <Button
+              type="button"
+              onClick={() => {
+                setPaymentCompleted(true);
+                setStep(3);
+              }}
+              className="flex-1"
+              disabled={paymentCompleted}
+            >
+              {paymentCompleted ? 'Paid' : 'I Have Paid'}
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Step 3: WhatsApp Instructions */}
+      {step === 3 && (
         <div className="space-y-6">
           <h2 className="text-2xl font-light text-[#F5F5F5]">
             Step 2: <span className="font-semibold text-[#C7CBD0]">Send Photos & Video via WhatsApp</span>
@@ -349,7 +454,7 @@ export default function WatchLaboratoryForm() {
             <Button
               type="button"
               variant="outline"
-              onClick={() => setStep(1)}
+              onClick={() => setStep(2)}
               className="flex-1"
             >
               Back
