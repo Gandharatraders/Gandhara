@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Upload, X, Check, AlertCircle } from 'lucide-react';
+import { Check, AlertCircle } from 'lucide-react';
 import { generateCaseNumber } from '@/lib/utils';
 
 interface FormData {
@@ -18,20 +18,12 @@ interface FormData {
   city: string;
   hasProofOfPurchase: boolean;
   observations: string;
-
-  // Step 2: Uploads
-  files: File[];
-
-  // Step 4: Payment Screenshot
-  paymentScreenshot: File | null;
-
-  // Proof of Purchase
-  proofOfPurchaseFile: File | null;
 }
 
 export default function WatchLaboratoryForm() {
   const [step, setStep] = useState(1);
   const [itemType, setItemType] = useState<'watch' | 'gemstone'>('watch');
+  const WHATSAPP_NUMBER = '03159452946';
   const [formData, setFormData] = useState<FormData>({
     brand: '',
     model: '',
@@ -43,196 +35,17 @@ export default function WatchLaboratoryForm() {
     city: '',
     hasProofOfPurchase: false,
     observations: '',
-    files: [],
-    paymentScreenshot: null,
-    proofOfPurchaseFile: null,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [caseNumber, setCaseNumber] = useState('');
-  const [paymentCompleted, setPaymentCompleted] = useState(false);
-  const [paymentProcessing, setPaymentProcessing] = useState(false);
-
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-
-    // Count current images and videos
-    const currentImages = formData.files.filter(f => f.type.startsWith('image/'));
-    const currentVideos = formData.files.filter(f => f.type.startsWith('video/'));
-
-    const newImages = files.filter(f => f.type.startsWith('image/'));
-    const newVideos = files.filter(f => f.type.startsWith('video/'));
-
-    // Validate file sizes (max 2MB per file)
-    const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
-    for (const file of files) {
-      if (file.size > MAX_FILE_SIZE) {
-        alert(`File "${file.name}" is too large (${(file.size / 1024 / 1024).toFixed(2)}MB). Maximum file size is 2MB. Please compress or resize your file.`);
-        return;
-      }
-    }
-
-    // Validate limits
-    if (currentImages.length + newImages.length > 5) {
-      alert('Maximum 5 images allowed. Please remove some images first.');
-      return;
-    }
-
-    if (currentVideos.length + newVideos.length > 1) {
-      alert('Maximum 1 video allowed. Please remove the existing video first.');
-      return;
-    }
-
-    // Validate requirements (at least 1 image and 1 video)
-    const totalImages = currentImages.length + newImages.length;
-    const totalVideos = currentVideos.length + newVideos.length;
-
-    if (totalImages === 0) {
-      alert('At least 1 image is required for submission.');
-      return;
-    }
-
-    if (totalVideos === 0) {
-      alert('At least 1 video is required for submission.');
-      return;
-    }
-
-    // Validate video duration (max 1 minute)
-    const videoFile = newVideos[0];
-    if (videoFile) {
-      const video = document.createElement('video');
-      video.preload = 'metadata';
-      video.src = URL.createObjectURL(videoFile);
-      video.onloadedmetadata = () => {
-        URL.revokeObjectURL(video.src);
-        if (video.duration > 60) {
-          alert('Video must be maximum 1 minute long.');
-          return;
-        }
-        setFormData({ ...formData, files: [...formData.files, ...files] });
-      };
-      return;
-    }
-
-    setFormData({ ...formData, files: [...formData.files, ...files] });
-  };
-
-  const handlePaymentScreenshotUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (!file.type.startsWith('image/')) {
-        alert('Please upload an image of your payment receipt.');
-        return;
-      }
-      const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
-      if (file.size > MAX_FILE_SIZE) {
-        alert(`Payment screenshot is too large (${(file.size / 1024 / 1024).toFixed(2)}MB). Maximum file size is 2MB. Please compress or resize your file.`);
-        return;
-      }
-      setFormData({ ...formData, paymentScreenshot: file });
-    }
-  };
-
-  const handlePayment = async () => {
-    setPaymentProcessing(true);
-    // Simulate payment processing
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setPaymentCompleted(true);
-    setPaymentProcessing(false);
-    setStep(4);
-  };
-
-  const removeFile = (index: number) => {
-    setFormData({
-      ...formData,
-      files: formData.files.filter((_, i) => i !== index),
-    });
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
-      // Upload files first
-      const uploadPromises = formData.files.map(async (file, index) => {
-        const formDataUpload = new FormData();
-        formDataUpload.append('file', file);
-        formDataUpload.append('type', 'laboratory');
-
-        const response = await fetch('/api/upload', {
-          method: 'POST',
-          body: formDataUpload,
-        });
-
-        if (!response.ok) {
-          const error = await response.json();
-          throw new Error(`Failed to upload file ${file.name}: ${error.details || error.error}`);
-        }
-
-        const result = await response.json();
-        return {
-          id: `upload-${index}`,
-          type: index === 0 ? 'dial' : 'side-profile',
-          fileName: file.name,
-          filePath: result.path,
-          uploadedAt: new Date().toISOString(),
-        };
-      });
-
-      // Upload payment screenshot
-      let paymentScreenshotData = null;
-      if (formData.paymentScreenshot) {
-        const formDataUpload = new FormData();
-        formDataUpload.append('file', formData.paymentScreenshot);
-        formDataUpload.append('type', 'laboratory');
-
-        const response = await fetch('/api/upload', {
-          method: 'POST',
-          body: formDataUpload,
-        });
-
-        if (!response.ok) {
-          const error = await response.json();
-          throw new Error(`Failed to upload payment screenshot: ${error.details || error.error}`);
-        }
-
-        const result = await response.json();
-        paymentScreenshotData = {
-          fileName: formData.paymentScreenshot.name,
-          filePath: result.path,
-          uploadedAt: new Date().toISOString(),
-        };
-      }
-
-      // Upload proof of purchase file
-      let proofOfPurchaseData = null;
-      if (formData.proofOfPurchaseFile) {
-        const formDataUpload = new FormData();
-        formDataUpload.append('file', formData.proofOfPurchaseFile);
-        formDataUpload.append('type', 'laboratory');
-
-        const response = await fetch('/api/upload', {
-          method: 'POST',
-          body: formDataUpload,
-        });
-
-        if (!response.ok) {
-          const error = await response.json();
-          throw new Error(`Failed to upload proof of purchase: ${error.details || error.error}`);
-        }
-
-        const result = await response.json();
-        proofOfPurchaseData = {
-          fileName: formData.proofOfPurchaseFile.name,
-          filePath: result.path,
-          uploadedAt: new Date().toISOString(),
-        };
-      }
-
-      const uploads = await Promise.all(uploadPromises);
-
-      // Submit case
+      // Submit case without file uploads
       const response = await fetch('/api/laboratory', {
         method: 'POST',
         headers: {
@@ -252,9 +65,9 @@ export default function WatchLaboratoryForm() {
             hasProofOfPurchase: formData.hasProofOfPurchase,
             observations: formData.observations,
           },
-          uploads,
-          paymentScreenshot: paymentScreenshotData,
-          proofOfPurchase: proofOfPurchaseData,
+          uploads: [],
+          paymentScreenshot: null,
+          proofOfPurchase: null,
         }),
       });
 
@@ -294,8 +107,20 @@ export default function WatchLaboratoryForm() {
           <p className="text-2xl font-mono text-[#C7CBD0]">{caseNumber}</p>
         </div>
         <p className="text-sm text-[#A6A6A6] mb-6">
-          You can use this reference number to track your case status.
+          Please send your photos and video to WhatsApp: <span className="text-[#C7CBD0] font-semibold">{WHATSAPP_NUMBER}</span>
         </p>
+        <div className="bg-[#151515] rounded-lg p-6 mb-6 border border-[#292929]">
+          <p className="text-sm text-[#A6A6A6] mb-4">Don't forget to include your case reference number in the WhatsApp message</p>
+          <a
+            href={`https://wa.me/92${WHATSAPP_NUMBER.substring(1)}?text=Hi, I have submitted laboratory case ${caseNumber}. Here are my photos and video for authentication.`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Button className="w-full bg-green-600 hover:bg-green-700 mb-3">
+              Send Files via WhatsApp
+            </Button>
+          </a>
+        </div>
         <div className="flex gap-4">
           <Button onClick={() => window.location.reload()}>Submit Another Case</Button>
           <Button variant="outline" onClick={() => {
@@ -343,7 +168,7 @@ export default function WatchLaboratoryForm() {
 
       {/* Progress Steps */}
       <div className="flex items-center justify-between mb-12">
-        {[1, 2, 3, 4, 5].map((s) => (
+        {[1, 2].map((s) => (
           <div key={s} className="flex items-center">
             <div
               className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${
@@ -354,7 +179,7 @@ export default function WatchLaboratoryForm() {
             >
               {step > s ? <Check className="w-5 h-5" /> : s}
             </div>
-            {s < 5 && (
+            {s < 2 && (
               <div
                 className={`w-24 h-1 mx-2 ${
                   step > s ? 'bg-[#E50920]' : 'bg-[#292929]'
@@ -491,82 +316,68 @@ export default function WatchLaboratoryForm() {
             className="w-full"
             disabled={!formData.brand || !formData.model || !formData.city}
           >
-            Continue to Uploads
+            Continue to WhatsApp Instructions
           </Button>
         </div>
       )}
 
-      {/* Step 2: Uploads */}
+      {/* Step 2: WhatsApp Instructions */}
       {step === 2 && (
         <div className="space-y-6">
           <h2 className="text-2xl font-light text-[#F5F5F5]">
-            Step 2: <span className="font-semibold text-[#C7CBD0]">Photo & Video Uploads</span>
+            Step 2: <span className="font-semibold text-[#C7CBD0]">Send Photos & Video via WhatsApp</span>
           </h2>
-          <p className="text-[#A6A6A6]">
-            Upload clear photographs and a video of your {itemType === 'watch' ? 'watch' : 'gemstone'}. <span className="text-[#E50920] font-semibold">Required: At least 1 image and 1 video (max 1 minute, max 2MB per file).</span> Maximum 5 images and 1 video allowed.
-          </p>
 
-          <div className="bg-[#151515] rounded-xl p-6 border-2 border-dashed border-[#292929]">
-            <input
-              type="file"
-              id="file-upload"
-              multiple
-              accept="image/*,video/*"
-              onChange={handleFileUpload}
-              className="hidden"
-            />
-            <label
-              htmlFor="file-upload"
-              className="flex flex-col items-center justify-center cursor-pointer"
+          <div className="bg-[#151515] rounded-xl p-6 border border-[#292929]">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center">
+                <svg className="w-8 h-8 text-green-500" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                </svg>
+              </div>
+              <div>
+                <p className="text-lg font-semibold text-[#F5F5F5]">Send Files via WhatsApp</p>
+                <p className="text-[#A6A6A6]">After submitting the form, send your photos and video to our WhatsApp</p>
+              </div>
+            </div>
+
+            <div className="space-y-4 text-sm text-[#A6A6A6]">
+              <div className="flex items-start gap-3">
+                <span className="text-[#E50920] font-bold">1.</span>
+                <p>Take 2-3 clear photos of your {itemType === 'watch' ? 'watch' : 'gemstone'} from different angles</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="text-[#E50920] font-bold">2.</span>
+                <p>Record a short video (max 1 minute) showing the {itemType === 'watch' ? 'watch' : 'gemstone'} in detail</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="text-[#E50920] font-bold">3.</span>
+                <p>Send the photos and video to WhatsApp: <span className="text-[#C7CBD0] font-semibold">{WHATSAPP_NUMBER}</span></p>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="text-[#E50920] font-bold">4.</span>
+                <p>Include your case reference number in the WhatsApp message</p>
+              </div>
+            </div>
+
+            <a
+              href={`https://wa.me/92${WHATSAPP_NUMBER.substring(1)}?text=Hi, I have submitted a laboratory case for ${itemType === 'watch' ? 'watch' : 'gemstone'} authentication. My details: Brand: ${formData.brand}, Model: ${formData.model}, Reference: ${formData.referenceNumber || 'N/A'}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 w-full"
             >
-              <Upload className="w-12 h-12 text-[#C7CBD0] mb-4" />
-              <p className="text-[#F5F5F5] mb-2">Click to upload or drag and drop</p>
-              <p className="text-sm text-[#A6A6A6]">
-                Images (JPG, PNG) max 5, Video (MP4, WebM) max 1 minute
-              </p>
-            </label>
+              <Button type="button" className="w-full bg-green-600 hover:bg-green-700">
+                Open WhatsApp
+              </Button>
+            </a>
           </div>
 
-          {formData.files.length > 0 && (
-            <div className="space-y-3">
-              <p className="text-sm font-medium text-[#F5F5F5]">
-                Uploaded Files ({formData.files.length})
-              </p>
-              {formData.files.map((file, index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between bg-[#151515] rounded-lg p-4"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-[#101010] rounded flex items-center justify-center">
-                      {file.type.startsWith('image/') ? (
-                        <svg className="w-5 h-5 text-[#C7CBD0]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                      ) : (
-                        <svg className="w-5 h-5 text-[#C7CBD0]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                        </svg>
-                      )}
-                    </div>
-                    <div>
-                      <p className="text-sm text-[#F5F5F5]">{file.name}</p>
-                      <p className="text-xs text-[#A6A6A6]">
-                        {(file.size / 1024 / 1024).toFixed(2)} MB
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => removeFile(index)}
-                    className="p-2 text-[#A6A6A6] hover:text-[#E50920] transition-colors"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
+          <div className="bg-[#101010] rounded-lg p-4 flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-[#E50920] flex-shrink-0 mt-0.5" />
+            <p className="text-sm text-[#A6A6A6]">
+              Make sure to send the photos and video within 24 hours of submitting the form. Our team will review your submission and inform you about the authentication results.
+            </p>
+          </div>
 
           <div className="flex gap-4">
             <Button
@@ -577,282 +388,14 @@ export default function WatchLaboratoryForm() {
             >
               Back
             </Button>
-            <Button
-              type="button"
-              onClick={() => setStep(3)}
-              className="flex-1"
-              disabled={formData.files.length === 0}
-            >
-              Continue to Payment
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {/* Step 3: Payment */}
-      {step === 3 && (
-        <div className="space-y-6">
-          <h2 className="text-2xl font-light text-[#F5F5F5]">
-            Step 3: <span className="font-semibold text-[#C7CBD0]">Payment</span>
-          </h2>
-          <p className="text-[#A6A6A6]">
-            A payment of 1,000 PKR is required to proceed with the authentication assessment.
-          </p>
-
-          <div className="bg-[#151515] rounded-xl p-6 border border-[#292929]">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <p className="text-[#A6A6A6] text-sm">Authentication Fee</p>
-                <p className="text-3xl font-semibold text-[#C7CBD0]">PKR 1,000</p>
-              </div>
-              <div className="w-16 h-16 bg-[#E50920]/20 rounded-full flex items-center justify-center">
-                <svg className="w-8 h-8 text-[#E50920]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-              </div>
-            </div>
-
-            <div className="bg-[#101010] rounded-lg p-4 mb-4 border border-[#292929]">
-              <p className="text-xs text-[#E50920] font-semibold mb-3 uppercase tracking-wider">Bank Account Details</p>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-[#A6A6A6]">Account Title:</span>
-                  <span className="text-[#F5F5F5] font-medium">SALMAN KHAN</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-[#A6A6A6]">Account Number:</span>
-                  <span className="text-[#F5F5F5] font-medium">03171010527808</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-[#A6A6A6]">IBAN:</span>
-                  <span className="text-[#F5F5F5] font-medium text-xs">PK67ALFH0317001010527808</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-[#A6A6A6]">Branch Name:</span>
-                  <span className="text-[#F5F5F5] font-medium">Dalazak Road Branch</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-[#A6A6A6]">Branch Code:</span>
-                  <span className="text-[#F5F5F5] font-medium">0317</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-[#A6A6A6]">Bank Name:</span>
-                  <span className="text-[#F5F5F5] font-medium">Bank Alfalah</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-3 text-sm text-[#A6A6A6]">
-              <div className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-green-500" />
-                <span>Professional authenticity assessment</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-green-500" />
-                <span>Expert analysis by watch specialists</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-green-500" />
-                <span>Detailed case report with reference number</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-green-500" />
-                <span>Case tracking support</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-[#101010] rounded-lg p-4 flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-[#E50920] flex-shrink-0 mt-0.5" />
-            <p className="text-sm text-[#A6A6A6]">
-              After making the payment, you will need to upload a screenshot of your payment receipt 
-              in the next step to complete your submission.
-            </p>
-          </div>
-
-          <div className="flex gap-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setStep(2)}
-              className="flex-1"
-            >
-              Back
-            </Button>
-            <Button
-              type="button"
-              onClick={handlePayment}
-              className="flex-1"
-              disabled={paymentProcessing || paymentCompleted}
-            >
-              {paymentProcessing ? 'Processing...' : paymentCompleted ? 'Paid' : 'Pay PKR 1,000'}
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {/* Step 4: Payment Screenshot */}
-      {step === 4 && (
-        <div className="space-y-6">
-          <h2 className="text-2xl font-light text-[#F5F5F5]">
-            Step 4: <span className="font-semibold text-[#C7CBD0]">Upload Payment Receipt</span>
-          </h2>
-          <p className="text-[#A6A6A6]">
-            Please upload a screenshot of your payment receipt to complete your submission.
-          </p>
-
-          <div className="bg-[#151515] rounded-xl p-6 border-2 border-dashed border-[#292929]">
-            <input
-              type="file"
-              id="payment-screenshot"
-              accept="image/*"
-              onChange={handlePaymentScreenshotUpload}
-              className="hidden"
-            />
-            <label
-              htmlFor="payment-screenshot"
-              className="flex flex-col items-center justify-center cursor-pointer"
-            >
-              <Upload className="w-12 h-12 text-[#C7CBD0] mb-4" />
-              <p className="text-[#F5F5F5] mb-2">Click to upload payment screenshot</p>
-              <p className="text-sm text-[#A6A6A6]">
-                Image (JPG, PNG) of your payment receipt
-              </p>
-            </label>
-          </div>
-
-          {formData.paymentScreenshot && (
-            <div className="bg-[#151515] rounded-lg p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-[#101010] rounded flex items-center justify-center">
-                    <svg className="w-5 h-5 text-[#C7CBD0]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="text-sm text-[#F5F5F5]">{formData.paymentScreenshot.name}</p>
-                    <p className="text-xs text-[#A6A6A6]">
-                      {(formData.paymentScreenshot.size / 1024 / 1024).toFixed(2)} MB
-                    </p>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setFormData({ ...formData, paymentScreenshot: null })}
-                  className="p-2 text-[#A6A6A6] hover:text-[#E50920] transition-colors"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
-          )}
-
-          <div className="flex gap-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setStep(3)}
-              className="flex-1"
-            >
-              Back
-            </Button>
-            <Button
-              type="button"
-              onClick={() => setStep(5)}
-              className="flex-1"
-              disabled={!formData.paymentScreenshot}
-            >
-              Review & Submit
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {/* Step 5: Review */}
-      {step === 5 && (
-        <div className="space-y-6">
-          <h2 className="text-2xl font-light text-[#F5F5F5]">
-            Step 5: <span className="font-semibold text-[#C7CBD0]">Review & Submit</span>
-          </h2>
-
-          <div className="bg-[#151515] rounded-xl p-6 space-y-4">
-            <h3 className="font-semibold text-[#F5F5F5]">Watch Details</h3>
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <p className="text-[#A6A6A6]">Brand</p>
-                <p className="text-[#F5F5F5]">{formData.brand}</p>
-              </div>
-              <div>
-                <p className="text-[#A6A6A6]">Model</p>
-                <p className="text-[#F5F5F5]">{formData.model}</p>
-              </div>
-              {formData.referenceNumber && (
-                <div>
-                  <p className="text-[#A6A6A6]">Reference Number</p>
-                  <p className="text-[#F5F5F5]">{formData.referenceNumber}</p>
-                </div>
-              )}
-              {formData.serialNumber && (
-                <div>
-                  <p className="text-[#A6A6A6]">Serial Number</p>
-                  <p className="text-[#F5F5F5]">{formData.serialNumber}</p>
-                </div>
-              )}
-              <div>
-                <p className="text-[#A6A6A6]">Location</p>
-                <p className="text-[#F5F5F5]">{formData.city}, {formData.country}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-[#151515] rounded-xl p-6 space-y-4">
-            <h3 className="font-semibold text-[#F5F5F5]">Payment Status</h3>
-            <div className="flex items-center gap-2">
-              <Check className="w-5 h-5 text-green-500" />
-              <p className="text-sm text-[#F5F5F5]">PKR 1,000 paid</p>
-            </div>
-          </div>
-
-          <div className="bg-[#151515] rounded-xl p-6 space-y-4">
-            <h3 className="font-semibold text-[#F5F5F5]">Uploaded Files</h3>
-            <p className="text-sm text-[#A6A6A6]">
-              {formData.files.length} file(s) uploaded
-            </p>
-          </div>
-
-          <div className="bg-[#151515] rounded-xl p-6 space-y-4">
-            <h3 className="font-semibold text-[#F5F5F5]">Payment Receipt</h3>
-            <div className="flex items-center gap-2">
-              <Check className="w-5 h-5 text-green-500" />
-              <p className="text-sm text-[#F5F5F5]">{formData.paymentScreenshot?.name}</p>
-            </div>
-          </div>
-
-          <div className="bg-[#101010] rounded-lg p-4 flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-[#E50920] flex-shrink-0 mt-0.5" />
-            <p className="text-sm text-[#A6A6A6]">
-              This authentication assessment is based on the provided photographs and information. 
-              A visually convincing counterfeit may pass image-based checks. This is not a definitive 
-              certificate of authenticity. For certain authentication, physical inspection by an expert is recommended.
-            </p>
-          </div>
-
-          <div className="flex gap-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setStep(4)}
-              className="flex-1"
-            >
-              Back
-            </Button>
             <Button type="submit" className="flex-1" disabled={isSubmitting}>
               {isSubmitting ? 'Submitting...' : 'Submit Case'}
             </Button>
           </div>
         </div>
       )}
+
+
     </form>
   );
 }
