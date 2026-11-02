@@ -261,41 +261,7 @@ export default function WatchLaboratoryForm() {
             </label>
           </div>
 
-          {formData.hasProofOfPurchase && (
-            <div className="bg-[#151515] rounded-xl p-6 border-2 border-dashed border-[#292929]">
-              <label className="text-sm font-medium text-[#F5F5F5] mb-2 block">
-                Upload Certificate & Purchasing Slip
-              </label>
-              <input
-                type="file"
-                accept="image/*,application/pdf"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) {
-                    const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
-                    if (file.size > MAX_FILE_SIZE) {
-                      alert(`Proof of purchase file is too large (${(file.size / 1024 / 1024).toFixed(2)}MB). Maximum file size is 2MB. Please compress or resize your file.`);
-                      return;
-                    }
-                    setFormData({ ...formData, proofOfPurchaseFile: file });
-                  }
-                }}
-                className="w-full text-sm text-[#A6A6A6] file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#E50920] file:text-white hover:file:bg-[#c4081a]"
-              />
-              {formData.proofOfPurchaseFile && (
-                <div className="mt-3 flex items-center justify-between bg-[#101010] rounded-lg p-3">
-                  <span className="text-sm text-[#F5F5F5]">{formData.proofOfPurchaseFile.name}</span>
-                  <button
-                    type="button"
-                    onClick={() => setFormData({ ...formData, proofOfPurchaseFile: null })}
-                    className="text-[#E50920] hover:text-[#c4081a]"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
+
 
           <div>
             <label className="text-sm font-medium text-[#A6A6A6] mb-2 block">
