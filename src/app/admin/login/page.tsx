@@ -19,12 +19,12 @@ export default function AdminLoginPage() {
 
     // Demo authentication - in production, this would call an API
     // For now, we'll use a simple demo check
-    if (email === 'admin@crownix.com' && password === 'admin123') {
+    if (email === 'Gandhara Traders' && password === 'Gandhara@000123') {
       // Store admin session in localStorage (in production, use secure cookies)
       localStorage.setItem('admin-session', 'true');
       router.push('/admin');
     } else {
-      setError('Invalid credentials. Use admin@crownix.com / admin123 for demo.');
+      setError('Invalid credentials. Please try again.');
     }
 
     setIsLoading(false);
@@ -57,12 +57,12 @@ export default function AdminLoginPage() {
             )}
 
             <Input
-              label="Email"
-              type="email"
+              label="Username"
+              type="text"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@crownix.com"
+              placeholder="Gandhara Traders"
             />
 
             <Input
@@ -83,12 +83,6 @@ export default function AdminLoginPage() {
               {isLoading ? 'Signing in...' : 'Sign In'}
             </Button>
           </form>
-
-          <div className="mt-6 text-center">
-            <p className="text-sm text-[#A6A6A6]">
-              Demo credentials: admin@crownix.com / admin123
-            </p>
-          </div>
         </div>
 
         <div className="mt-6 text-center">
