@@ -18,6 +18,10 @@ export const metadata: Metadata = {
   title: "Gandhara Traders Company | Premium Watches in Pakistan",
   description: "Discover the art of precision with Gandhara Traders Company. Premium watches for men and women in Pakistan. Luxury timepieces with authentic craftsmanship.",
   keywords: "Gandhara Traders Company, watches online Pakistan, men's watches, women's watches, premium watches, luxury watches, buy watches Pakistan",
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

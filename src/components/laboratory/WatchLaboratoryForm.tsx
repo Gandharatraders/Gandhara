@@ -63,6 +63,15 @@ export default function WatchLaboratoryForm() {
     const newImages = files.filter(f => f.type.startsWith('image/'));
     const newVideos = files.filter(f => f.type.startsWith('video/'));
 
+    // Validate file sizes (max 5MB per file)
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+    for (const file of files) {
+      if (file.size > MAX_FILE_SIZE) {
+        alert(`File "${file.name}" is too large. Maximum file size is 5MB.`);
+        return;
+      }
+    }
+
     // Validate limits
     if (currentImages.length + newImages.length > 5) {
       alert('Maximum 5 images allowed. Please remove some images first.');
@@ -113,6 +122,11 @@ export default function WatchLaboratoryForm() {
     if (file) {
       if (!file.type.startsWith('image/')) {
         alert('Please upload an image of your payment receipt.');
+        return;
+      }
+      const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+      if (file.size > MAX_FILE_SIZE) {
+        alert('Payment screenshot is too large. Maximum file size is 5MB.');
         return;
       }
       setFormData({ ...formData, paymentScreenshot: file });
@@ -246,10 +260,13 @@ export default function WatchLaboratoryForm() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(`Failed to submit case: ${error.error || 'Unknown error'}`);
+        console.error('API Error Response:', error);
+        throw new Error(`Failed to submit case: ${error.error || error.details || 'Unknown error'}`);
       }
 
       const data = await response.json();
+      console.log('API Response:', data);
+      console.log('Case number from response:', data.caseNumber);
       setCaseNumber(data.caseNumber);
       setSubmitted(true);
     } catch (error) {
@@ -430,6 +447,11 @@ export default function WatchLaboratoryForm() {
                 onChange={(e) => {
                   const file = e.target.files?.[0];
                   if (file) {
+                    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+                    if (file.size > MAX_FILE_SIZE) {
+                      alert('Proof of purchase file is too large. Maximum file size is 5MB.');
+                      return;
+                    }
                     setFormData({ ...formData, proofOfPurchaseFile: file });
                   }
                 }}
