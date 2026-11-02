@@ -18,6 +18,12 @@ interface FormData {
   city: string;
   hasProofOfPurchase: boolean;
   observations: string;
+
+  // Step 3: Payment Screenshot
+  paymentScreenshot: File | null;
+
+  // Step 4: Certificate Photo
+  certificatePhoto: File | null;
 }
 
 export default function WatchLaboratoryForm() {
@@ -35,18 +41,102 @@ export default function WatchLaboratoryForm() {
     city: '',
     hasProofOfPurchase: false,
     observations: '',
+    paymentScreenshot: null,
+    certificatePhoto: null,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [caseNumber, setCaseNumber] = useState('');
   const [paymentCompleted, setPaymentCompleted] = useState(false);
 
+  const handlePaymentScreenshotUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        alert('Please upload an image of your payment receipt.');
+        return;
+      }
+      const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+      if (file.size > MAX_FILE_SIZE) {
+        alert(`Payment screenshot is too large (${(file.size / 1024 / 1024).toFixed(2)}MB). Maximum file size is 2MB. Please compress or resize your file.`);
+        return;
+      }
+      setFormData({ ...formData, paymentScreenshot: file });
+    }
+  };
+
+  const handleCertificatePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        alert('Please upload an image for the certificate.');
+        return;
+      }
+      const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+      if (file.size > MAX_FILE_SIZE) {
+        alert(`Certificate photo is too large (${(file.size / 1024 / 1024).toFixed(2)}MB). Maximum file size is 2MB. Please compress or resize your file.`);
+        return;
+      }
+      setFormData({ ...formData, certificatePhoto: file });
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
-      // Submit case without file uploads
+      // Upload payment screenshot
+      let paymentScreenshotData = null;
+      if (formData.paymentScreenshot) {
+        const formDataUpload = new FormData();
+        formDataUpload.append('file', formData.paymentScreenshot);
+        formDataUpload.append('type', 'laboratory');
+
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formDataUpload,
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(`Failed to upload payment screenshot: ${error.details || error.error}`);
+        }
+
+        const result = await response.json();
+        paymentScreenshotData = {
+          fileName: formData.paymentScreenshot.name,
+          filePath: result.path,
+          uploadedAt: new Date().toISOString(),
+        };
+      }
+
+      // Upload certificate photo
+      let certificatePhotoData = null;
+      if (formData.certificatePhoto) {
+        const formDataUpload = new FormData();
+        formDataUpload.append('file', formData.certificatePhoto);
+        formDataUpload.append('type', 'laboratory');
+
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formDataUpload,
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(`Failed to upload certificate photo: ${error.details || error.error}`);
+        }
+
+        const result = await response.json();
+        certificatePhotoData = {
+          fileName: formData.certificatePhoto.name,
+          filePath: result.path,
+          uploadedAt: new Date().toISOString(),
+        };
+      }
+
+      // Submit case
       const response = await fetch('/api/laboratory', {
         method: 'POST',
         headers: {
@@ -67,7 +157,8 @@ export default function WatchLaboratoryForm() {
             observations: formData.observations,
           },
           uploads: [],
-          paymentScreenshot: null,
+          paymentScreenshot: paymentScreenshotData,
+          certificatePhoto: certificatePhotoData,
           proofOfPurchase: null,
         }),
       });
@@ -169,7 +260,7 @@ export default function WatchLaboratoryForm() {
 
       {/* Progress Steps */}
       <div className="flex items-center justify-between mb-12">
-        {[1, 2, 3].map((s) => (
+        {[1, 2, 3, 4].map((s) => (
           <div key={s} className="flex items-center">
             <div
               className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${
@@ -180,7 +271,7 @@ export default function WatchLaboratoryForm() {
             >
               {step > s ? <Check className="w-5 h-5" /> : s}
             </div>
-            {s < 3 && (
+            {s < 4 && (
               <div
                 className={`w-24 h-1 mx-2 ${
                   step > s ? 'bg-[#E50920]' : 'bg-[#292929]'
@@ -392,8 +483,179 @@ export default function WatchLaboratoryForm() {
         </div>
       )}
 
-      {/* Step 3: WhatsApp Instructions */}
+      {/* Step 3: Upload Payment Receipt */}
       {step === 3 && (
+        <div className="space-y-6">
+          <h2 className="text-2xl font-light text-[#F5F5F5]">
+            Step 3: <span className="font-semibold text-[#C7CBD0]">Upload Payment Receipt</span>
+          </h2>
+          <p className="text-[#A6A6A6]">
+            Please upload a screenshot of your payment receipt to complete your submission.
+          </p>
+
+          <div className="bg-[#151515] rounded-xl p-6 border-2 border-dashed border-[#292929]">
+            <input
+              type="file"
+              id="payment-screenshot"
+              accept="image/*"
+              onChange={handlePaymentScreenshotUpload}
+              className="hidden"
+            />
+            <label
+              htmlFor="payment-screenshot"
+              className="flex flex-col items-center justify-center cursor-pointer"
+            >
+              <svg className="w-12 h-12 text-[#C7CBD0] mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <p className="text-[#F5F5F5] mb-2">Click to upload payment screenshot</p>
+              <p className="text-sm text-[#A6A6A6]">
+                Image (JPG, PNG) of your payment receipt (max 2MB)
+              </p>
+            </label>
+          </div>
+
+          {formData.paymentScreenshot && (
+            <div className="bg-[#151515] rounded-lg p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-[#101010] rounded flex items-center justify-center">
+                    <svg className="w-5 h-5 text-[#C7CBD0]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-sm text-[#F5F5F5]">{formData.paymentScreenshot.name}</p>
+                    <p className="text-xs text-[#A6A6A6]">
+                      {(formData.paymentScreenshot.size / 1024 / 1024).toFixed(2)} MB
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, paymentScreenshot: null })}
+                  className="p-2 text-[#A6A6A6] hover:text-[#E50920] transition-colors"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div className="flex gap-4">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setStep(2)}
+              className="flex-1"
+            >
+              Back
+            </Button>
+            <Button
+              type="button"
+              onClick={() => setStep(4)}
+              className="flex-1"
+              disabled={!formData.paymentScreenshot}
+            >
+              Continue
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Step 4: Upload Certificate Photo */}
+      {step === 4 && (
+        <div className="space-y-6">
+          <h2 className="text-2xl font-light text-[#F5F5F5]">
+            Step 4: <span className="font-semibold text-[#C7CBD0]">Upload Photo for Certificate</span>
+          </h2>
+          <p className="text-[#A6A6A6]">
+            Upload one high-quality photo of your {itemType === 'watch' ? 'watch' : 'gemstone'} that will be printed on the authenticity certificate.
+          </p>
+
+          <div className="bg-[#151515] rounded-xl p-6 border-2 border-dashed border-[#292929]">
+            <input
+              type="file"
+              id="certificate-photo"
+              accept="image/*"
+              onChange={handleCertificatePhotoUpload}
+              className="hidden"
+            />
+            <label
+              htmlFor="certificate-photo"
+              className="flex flex-col items-center justify-center cursor-pointer"
+            >
+              <svg className="w-12 h-12 text-[#C7CBD0] mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <p className="text-[#F5F5F5] mb-2">Click to upload certificate photo</p>
+              <p className="text-sm text-[#A6A6A6]">
+                High-quality image (JPG, PNG) for certificate (max 2MB)
+              </p>
+            </label>
+          </div>
+
+          {formData.certificatePhoto && (
+            <div className="bg-[#151515] rounded-lg p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-[#101010] rounded flex items-center justify-center">
+                    <svg className="w-5 h-5 text-[#C7CBD0]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-sm text-[#F5F5F5]">{formData.certificatePhoto.name}</p>
+                    <p className="text-xs text-[#A6A6A6]">
+                      {(formData.certificatePhoto.size / 1024 / 1024).toFixed(2)} MB
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, certificatePhoto: null })}
+                  className="p-2 text-[#A6A6A6] hover:text-[#E50920] transition-colors"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div className="bg-[#101010] rounded-lg p-4 flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-[#E50920] flex-shrink-0 mt-0.5" />
+            <p className="text-sm text-[#A6A6A6]">
+              This photo will be printed on your authenticity certificate. Choose a clear, high-quality image that best represents your {itemType === 'watch' ? 'watch' : 'gemstone'}.
+            </p>
+          </div>
+
+          <div className="flex gap-4">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setStep(3)}
+              className="flex-1"
+            >
+              Back
+            </Button>
+            <Button
+              type="button"
+              onClick={() => setStep(5)}
+              className="flex-1"
+              disabled={!formData.certificatePhoto}
+            >
+              Continue
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Step 5: WhatsApp Instructions */}
+      {step === 5 && (
         <div className="space-y-6">
           <h2 className="text-2xl font-light text-[#F5F5F5]">
             Step 2: <span className="font-semibold text-[#C7CBD0]">Send Photos & Video via WhatsApp</span>
@@ -454,7 +716,7 @@ export default function WatchLaboratoryForm() {
             <Button
               type="button"
               variant="outline"
-              onClick={() => setStep(2)}
+              onClick={() => setStep(4)}
               className="flex-1"
             >
               Back

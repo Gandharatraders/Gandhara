@@ -1,10 +1,10 @@
-# Proof of Purchase Column Fix Instructions
+# Database Column Fix Instructions
 
 ## Critical Step Required
 
-The Supabase database is missing the `proof_of_purchase` column in the `laboratory_cases` table. This is causing the case submission to fail and the case reference number to not generate.
+The Supabase database is missing the `proof_of_purchase` and `certificate_photo` columns in the `laboratory_cases` table. This is causing the case submission to fail and the case reference number to not generate.
 
-## How to Add This Column
+## How to Add These Columns
 
 1. Go to your Supabase project dashboard: https://supabase.com/dashboard/project/pjqfmwjkkthxvfqbzxqc
 2. Click on **SQL Editor** in the left sidebar
@@ -13,6 +13,9 @@ The Supabase database is missing the `proof_of_purchase` column in the `laborato
 ```sql
 ALTER TABLE laboratory_cases
 ADD COLUMN IF NOT EXISTS proof_of_purchase JSONB DEFAULT '{}'::jsonb;
+
+ALTER TABLE laboratory_cases
+ADD COLUMN IF NOT EXISTS certificate_photo JSONB DEFAULT '{}'::jsonb;
 ```
 5. Click **"Run"** or press `Ctrl+Enter`
 
@@ -21,11 +24,12 @@ ADD COLUMN IF NOT EXISTS proof_of_purchase JSONB DEFAULT '{}'::jsonb;
 After running this SQL:
 - Laboratory case submissions will work correctly
 - Proof of purchase files will be saved to the database
+- Certificate photos will be saved to the database
 - Case reference numbers will be generated and displayed on the submission success screen
 - Users can track their cases using the reference number
 
-## Verify the Column Was Added
+## Verify the Columns Were Added
 
 1. Go to **Table Editor** in Supabase
 2. Click on the `laboratory_cases` table
-3. You should see the `proof_of_purchase` column in the column list
+3. You should see the `proof_of_purchase` and `certificate_photo` columns in the column list
