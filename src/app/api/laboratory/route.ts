@@ -45,6 +45,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
+    console.log('Received body:', JSON.stringify(body, null, 2));
 
     const newCase = {
       ...toSnakeCase(body),
@@ -65,6 +66,7 @@ export async function POST(request: Request) {
     return NextResponse.json(toCamelCase(labCase), { status: 201 });
   } catch (error) {
     console.error('POST laboratory case error:', error);
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack');
     console.error('Error details:', error instanceof Error ? error.message : 'Unknown error');
     return NextResponse.json({ error: 'Failed to create case', details: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });
   }
