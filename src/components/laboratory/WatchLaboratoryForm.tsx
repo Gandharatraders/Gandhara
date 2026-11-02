@@ -63,11 +63,11 @@ export default function WatchLaboratoryForm() {
     const newImages = files.filter(f => f.type.startsWith('image/'));
     const newVideos = files.filter(f => f.type.startsWith('video/'));
 
-    // Validate file sizes (max 5MB per file)
-    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+    // Validate file sizes (max 2MB per file)
+    const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
     for (const file of files) {
       if (file.size > MAX_FILE_SIZE) {
-        alert(`File "${file.name}" is too large. Maximum file size is 5MB.`);
+        alert(`File "${file.name}" is too large (${(file.size / 1024 / 1024).toFixed(2)}MB). Maximum file size is 2MB. Please compress or resize your file.`);
         return;
       }
     }
@@ -124,9 +124,9 @@ export default function WatchLaboratoryForm() {
         alert('Please upload an image of your payment receipt.');
         return;
       }
-      const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+      const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
       if (file.size > MAX_FILE_SIZE) {
-        alert('Payment screenshot is too large. Maximum file size is 5MB.');
+        alert(`Payment screenshot is too large (${(file.size / 1024 / 1024).toFixed(2)}MB). Maximum file size is 2MB. Please compress or resize your file.`);
         return;
       }
       setFormData({ ...formData, paymentScreenshot: file });
@@ -447,9 +447,9 @@ export default function WatchLaboratoryForm() {
                 onChange={(e) => {
                   const file = e.target.files?.[0];
                   if (file) {
-                    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+                    const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
                     if (file.size > MAX_FILE_SIZE) {
-                      alert('Proof of purchase file is too large. Maximum file size is 5MB.');
+                      alert(`Proof of purchase file is too large (${(file.size / 1024 / 1024).toFixed(2)}MB). Maximum file size is 2MB. Please compress or resize your file.`);
                       return;
                     }
                     setFormData({ ...formData, proofOfPurchaseFile: file });
@@ -503,7 +503,7 @@ export default function WatchLaboratoryForm() {
             Step 2: <span className="font-semibold text-[#C7CBD0]">Photo & Video Uploads</span>
           </h2>
           <p className="text-[#A6A6A6]">
-            Upload clear photographs and a video of your {itemType === 'watch' ? 'watch' : 'gemstone'}. <span className="text-[#E50920] font-semibold">Required: At least 1 image and 1 video (max 1 minute).</span> Maximum 5 images and 1 video allowed.
+            Upload clear photographs and a video of your {itemType === 'watch' ? 'watch' : 'gemstone'}. <span className="text-[#E50920] font-semibold">Required: At least 1 image and 1 video (max 1 minute, max 2MB per file).</span> Maximum 5 images and 1 video allowed.
           </p>
 
           <div className="bg-[#151515] rounded-xl p-6 border-2 border-dashed border-[#292929]">
